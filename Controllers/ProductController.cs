@@ -473,7 +473,7 @@ namespace Atlob_Dent.Controllers
         /// search for products by 
         /// company|category|product name
         /// </summary>
-        /// <example>https://localhost:44348/api/Atlob_product/BySearch?s=product 1</example>
+        /// <example>domain/api/Atlob_product/BySearch?s=product 1</example>
         /// <param name="s">matching string</param>
         /// <returns>set of matched products</returns>
         public IActionResult BySearch(string s, int? pageLength = null, int? pageNumber = null)
@@ -498,6 +498,7 @@ namespace Atlob_Dent.Controllers
             }
         }
         #endregion
+        public void aa() { }
         // POST api/values
         [HttpPost]
         public void Post([FromBody] string value)
