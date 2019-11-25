@@ -36,7 +36,7 @@ namespace Atlob_Dent.Controllers
             }
             catch
             {
-                return BadRequest("error in server");
+                return BadRequest(new BadResponseResult());
             }
         }
         /// <summary>
@@ -63,7 +63,7 @@ namespace Atlob_Dent.Controllers
             }
             catch
             {
-                return BadRequest("error in server");
+                return BadRequest(new BadResponseResult());
             }
         }
         #endregion
@@ -88,7 +88,7 @@ namespace Atlob_Dent.Controllers
             }
             catch
             {
-                return BadRequest("error in server");
+                return BadRequest(new BadResponseResult());
             }
         }
         /// <summary>
@@ -118,7 +118,7 @@ namespace Atlob_Dent.Controllers
             }
             catch
             {
-                return BadRequest("error in server");
+                return BadRequest(new BadResponseResult());
             }
         }
         /// <summary>
@@ -141,7 +141,7 @@ namespace Atlob_Dent.Controllers
             }
             catch
             {
-                return BadRequest("error in server");
+                return BadRequest(new BadResponseResult());
             }
         }
         /// <summary>
@@ -171,7 +171,7 @@ namespace Atlob_Dent.Controllers
             }
             catch
             {
-                return BadRequest("error in server");
+                return BadRequest(new BadResponseResult());
             }
         }
         /// <summary>
@@ -198,7 +198,7 @@ namespace Atlob_Dent.Controllers
             }
             catch
             {
-                return BadRequest("error in server");
+                return BadRequest(new BadResponseResult());
             }
         }
         ///<summary>
@@ -232,7 +232,7 @@ namespace Atlob_Dent.Controllers
             }
             catch
             {
-                return BadRequest("error in server");
+                return BadRequest(new BadResponseResult());
             }
         }
         #endregion
@@ -268,7 +268,7 @@ namespace Atlob_Dent.Controllers
             }
             catch
             {
-                return BadRequest("error in server");
+                return BadRequest(new BadResponseResult());
             }
         }
         #endregion
@@ -285,17 +285,13 @@ namespace Atlob_Dent.Controllers
             try
             {
                 var data = _context.Products
-                 .OrderByDescending(p=>p.orderCount)
-                 .GetCommonMostllySelectedData(0,by, HttpContext)
-                 /*.Take(by)
-                 ._selectCommonProductsStamp()
-                 .GetExportedProductModels(HttpContext)*/
-                 .ToList();
+                 .OrderByDescending(p => p.orderCount)
+                 .GetResponsePages(null, 0, by, HttpContext);
                 return Ok(data);
             }
             catch
             {
-                return BadRequest("error in server");
+                return BadRequest(new BadResponseResult());
             }
         }
         /// <summary>
@@ -321,17 +317,12 @@ namespace Atlob_Dent.Controllers
                 if ((pageNumber * pageLength) > by) pageLength = by-(pageLength*(pageNumber-1));
                 var data = _context.Products
                  .OrderByDescending(p => p.orderCount)
-                 .GetCommonMostllySelectedData((((int)pageNumber - 1) * (int)pageLength), (int)pageLength, HttpContext)
-                 /*.Skip(((int)pageNumber -1)* (int)pageLength)
-                 .Take((int)pageLength)
-                 ._selectCommonProductsStamp()
-                 .GetExportedProductModels(HttpContext)*/
-                 .ToList();
+                 .GetResponsePages(by, (((int)pageNumber - 1) * (int)pageLength), (int)pageLength, HttpContext);
                 return Ok(data);
             }
             catch
             {
-                return BadRequest("error in server");
+                return BadRequest(new BadResponseResult());
             }
         }
 
@@ -347,16 +338,12 @@ namespace Atlob_Dent.Controllers
             {
                 var data = _context.Products
                  .OrderBy(p => p.createdDate)
-                 .GetCommonMostllySelectedData(0,by, HttpContext)
-                 /*.Take(by)
-                 ._selectCommonProductsStamp()
-                 .GetExportedProductModels(HttpContext)*/
-                 .ToList();
+                 .GetResponsePages(null, 0, by, HttpContext);
                 return Ok(data);
             }
             catch
             {
-                return BadRequest("error in server");
+                return BadRequest(new BadResponseResult());
             }
         }
         /// <summary>
@@ -382,17 +369,12 @@ namespace Atlob_Dent.Controllers
                 if ((pageNumber * pageLength) > by) pageLength = by - (pageLength * (pageNumber - 1));
                 var data = _context.Products
                  .OrderBy(p => p.orderCount)
-                 .GetCommonMostllySelectedData((((int)pageNumber - 1) * (int)pageLength), (int)pageLength, HttpContext)
-                 /*.Skip(((int)pageNumber - 1) * (int)pageLength)
-                 .Take((int)pageLength)
-                 ._selectCommonProductsStamp()
-                 .GetExportedProductModels(HttpContext)*/
-                 .ToList();
+                 .GetResponsePages(by, (((int)pageNumber - 1) * (int)pageLength), (int)pageLength, HttpContext);
                 return Ok(data);
             }
             catch
             {
-                return BadRequest("error in server");
+                return BadRequest(new BadResponseResult());
             }
         }
         private IActionResult _OnSale()
@@ -408,9 +390,18 @@ namespace Atlob_Dent.Controllers
             }
             catch
             {
-                return BadRequest(new ResponseResult { status = false, message = "error not handledin server" });
+                return BadRequest(new BadResponseResult());
             }
         }
+        /// <summary>
+        /// get all on sale products
+        /// or get specified page of on sale products
+        /// </summary>
+        /// <example>dmain/api/Atlob_product/onSale</example>
+        /// <example>dmain/api/Atlob_product/onSale?pageLength=4&pageNumber=2</example>
+        /// <param name="pageLength"></param>
+        /// <param name="pageNumber"></param>
+        /// <returns></returns>
         public IActionResult OnSale(int? pageLength = null, int? pageNumber = null)
         {
             try
@@ -424,12 +415,12 @@ namespace Atlob_Dent.Controllers
                     pageNumber = (int)maxPageNumber;
                 var data = _context.OnSales
                  .OrderByDescending(p => p.discount)
-                 .GetCommonMostllyOnsaleProductsSelectedData((((int)pageNumber - 1) * (int)pageLength), (int)pageLength, HttpContext);
+                 .GetResponsePages(totalOfProducts,(((int)pageNumber - 1) * (int)pageLength), (int)pageLength, HttpContext);
                 return Ok(data);
             }
             catch
             {
-                return BadRequest(new ResponseResult { status=false,message="error not handledin server"});
+                return BadRequest(new BadResponseResult());
             }
         }
         #endregion
@@ -462,14 +453,7 @@ namespace Atlob_Dent.Controllers
 
 
         }
-        /// <summary>
-        /// search for products by 
-        /// company|category|product name
-        /// </summary>
-        /// <example>https://localhost:44348/api/Atlob_product/BySearch?s=product 1</example>
-        /// <param name="s">matching string</param>
-        /// <returns>set of matched products</returns>
-        public IActionResult BySearch(string s)
+        private IActionResult _BySearch(string s)
         {
             try
             {
@@ -482,7 +466,35 @@ namespace Atlob_Dent.Controllers
             }
             catch
             {
-                return Ok(new ResponseResult {status=false,message="error in server"});
+                return Ok(new BadResponseResult());
+            }
+        }
+        /// <summary>
+        /// search for products by 
+        /// company|category|product name
+        /// </summary>
+        /// <example>https://localhost:44348/api/Atlob_product/BySearch?s=product 1</example>
+        /// <param name="s">matching string</param>
+        /// <returns>set of matched products</returns>
+        public IActionResult BySearch(string s, int? pageLength = null, int? pageNumber = null)
+        {
+            try
+            {
+                s = s.Trim();
+                if (pageNumber == null && pageLength == null) return _BySearch(s);
+                var data = searchFor(s).AsQueryable().OrderBy(p=>p.orderCount);                   
+                int totalOfProducts = data.Count();
+                pageNumber = pageNumber ?? 1;
+                pageLength = pageLength ?? 10;
+                var maxPageNumber = Math.Ceiling((totalOfProducts / (double)pageLength));
+                if (pageNumber > maxPageNumber)
+                    pageNumber = (int)maxPageNumber;
+                var obj = data.GetResponsePages(totalOfProducts, (((int)pageNumber - 1) * (int)pageLength), (int)pageLength, HttpContext);
+                return Ok(obj);
+            }
+            catch
+            {
+                return Ok(new BadResponseResult());
             }
         }
         #endregion

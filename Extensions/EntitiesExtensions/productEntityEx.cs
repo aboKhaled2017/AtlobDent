@@ -1,4 +1,5 @@
 ﻿using Atlob_Dent.Data;
+using Atlob_Dent.Helpers;
 using Atlob_Dent.Models;
 using Microsoft.AspNetCore.Http;
 using System;
@@ -142,21 +143,33 @@ namespace Atlob_Dent
         #endregion
 
         #region shared commont selected data
-        public static IQueryable<ExportedProductModel> GetCommonMostllySelectedData(this IOrderedQueryable<Product> prods, int skip, int take, HttpContext httpContext)
+        public static PagingResponse<ExportedProductModel> GetResponsePages(this IOrderedQueryable<Product> prods, int? total, int skip, int take, HttpContext httpContext)
         {
-            return prods
+            var data= prods
                 .Skip(skip)
                  .Take(take)
                  ._selectCommonProductsStamp()
-                 .GetExportedProductModels(httpContext).AsQueryable();
+                 .GetExportedProductModels(httpContext).ToList();
+            return new PagingResponse<ExportedProductModel>
+            {
+                count = data.Count,
+                total = total??data.Count,
+                data = data
+            };
         }
-        public static IQueryable<ExportedOnSaleProductModel> GetCommonMostllyOnsaleProductsSelectedData(this IOrderedQueryable<OnSale> prods, int skip, int take, HttpContext httpContext)
+        public static PagingResponse<ExportedOnSaleProductModel> GetResponsePages(this IOrderedQueryable<OnSale> prods, int total, int skip, int take, HttpContext httpContext)
         {
-            return prods
+            var data = prods
                 .Skip(skip)
                  .Take(take)
                  ._selectCommonOnSaleProductsStamp()
-                 .GetExportedOnSaleProductModels(httpContext).AsQueryable();
+                 .GetExportedOnSaleProductModels(httpContext).ToList();
+            return new PagingResponse<ExportedOnSaleProductModel>
+            {
+                count = data.Count,
+                total = total,
+                data = data
+            };
         }
         #endregion
     }
