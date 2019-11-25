@@ -1,5 +1,6 @@
 ﻿using Atlob_Dent.Data;
 using Atlob_Dent.Models;
+using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -137,6 +138,25 @@ namespace Atlob_Dent
         public static IQueryable<OnSaleProductModel> _selectCommonOnSaleProductsStamp(this IEnumerable<OnSale> onSaleProducts)
         {
             return onSaleProducts.AsQueryable()._selectCommonOnSaleProductsStamp();
+        }
+        #endregion
+
+        #region shared commont selected data
+        public static IQueryable<ExportedProductModel> GetCommonMostllySelectedData(this IOrderedQueryable<Product> prods, int skip, int take, HttpContext httpContext)
+        {
+            return prods
+                .Skip(skip)
+                 .Take(take)
+                 ._selectCommonProductsStamp()
+                 .GetExportedProductModels(httpContext).AsQueryable();
+        }
+        public static IQueryable<ExportedOnSaleProductModel> GetCommonMostllyOnsaleProductsSelectedData(this IOrderedQueryable<OnSale> prods, int skip, int take, HttpContext httpContext)
+        {
+            return prods
+                .Skip(skip)
+                 .Take(take)
+                 ._selectCommonOnSaleProductsStamp()
+                 .GetExportedOnSaleProductModels(httpContext).AsQueryable();
         }
         #endregion
     }

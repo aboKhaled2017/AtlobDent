@@ -408,6 +408,27 @@ namespace Atlob_Dent.Controllers
             }
             catch
             {
+                return BadRequest(new ResponseResult { status = false, message = "error not handledin server" });
+            }
+        }
+        public IActionResult OnSale(int? pageLength = null, int? pageNumber = null)
+        {
+            try
+            { 
+                if (pageNumber == null && pageLength == null) return _OnSale();
+                int totalOfProducts = _context.OnSales.Count();
+                pageNumber = pageNumber ?? 1;
+                pageLength = pageLength ?? 10;
+                var maxPageNumber = Math.Ceiling((totalOfProducts / (double)pageLength));
+                if (pageNumber > maxPageNumber)
+                    pageNumber = (int)maxPageNumber;
+                var data = _context.OnSales
+                 .OrderByDescending(p => p.discount)
+                 .GetCommonMostllyOnsaleProductsSelectedData((((int)pageNumber - 1) * (int)pageLength), (int)pageLength, HttpContext);
+                return Ok(data);
+            }
+            catch
+            {
                 return BadRequest(new ResponseResult { status=false,message="error not handledin server"});
             }
         }

@@ -75,7 +75,7 @@ namespace Atlob_Dent.Controllers
             {
                 return Ok(
                          (await _context.Products
-                        .Where(p => p.categoryId == id || p.category.AnyParntCategoryHasId(id))
+                        .Where(p => p.categoryId == id || p.category.AnyParentCategoryHasId(id))
                         .Select(p => p.company)
                         .Distinct()
                         .ToListAsync())
