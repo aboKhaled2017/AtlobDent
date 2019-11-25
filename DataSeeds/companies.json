@@ -1,0 +1,33 @@
+[
+  {
+    "id": "72c8b403-615e-4477-870e-fa7621b8b735",
+    "name": "company A",
+    "imgsrc": "1.jpg"
+  },
+  {
+    "id": "72c8b403-615e-5555-870e-fa7621b8b735",
+    "name": "company B",
+    "imgsrc": "1.jpg"
+  },
+  {
+    "id": "72c8b403-615e-6666-870e-fa7621b8b735",
+    "name": "company C",
+    "imgsrc": "2.jpg"
+  },
+  {
+    "id": "72c8b403-615e-7777-870e-fa7621b8b735",
+    "name": "company D",
+    "imgsrc": "3.jpg"
+  },
+
+  {
+    "id": "72c8b403-615e-4411-870e-fa7621b8b735",
+    "name": "company E",
+    "imgsrc": "4.jpg"
+  },
+  {
+    "id": "72c8b403-615e-5522-870e-fa7621b8b735",
+    "name": "company F",
+    "imgsrc": "5.jpg"
+  }
+]

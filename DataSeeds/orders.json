@@ -1,0 +1,42 @@
+[
+  {
+    "id": "11c8b403-615e-4477-870e-fa7621b8b735",
+    "fullname": "mohamed khaled",
+    "phone": "01152506434",
+    "address": "Dar elsalam -sohage",
+    "quantity": 4,
+    "productId": "",
+    "state": 0
+  },
+  {
+    "id": "12c8b403-615e-5555-870e-fa7621b8b735",
+    "name": "main category 2",
+    "superId": null
+  },
+  {
+    "id": "13c8b403-615e-6666-870e-fa7621b8b735",
+    "name": "main category 3",
+    "superId": null
+  },
+  {
+    "id": "14c8b403-615e-7777-870e-fa7621b8b735",
+    "name": "main category 4",
+    "superId": null
+  },
+
+  {
+    "id": "15c8b403-615e-4411-870e-fa7621b8b735",
+    "name": "company1 of category 1",
+    "superId": "72c8b403-615e-4477-870e-fa7621b8b735"
+  },
+  {
+    "id": "16c8b403-615e-5522-870e-fa7621b8b735",
+    "name": "company2 of category 1",
+    "superId": "72c8b403-615e-4477-870e-fa7621b8b735"
+  },
+  {
+    "id": "17c8b403-615e-6611-870e-fa7621b8b735",
+    "name": "company1 of category 2",
+    "superId": "72c8b403-615e-5555-870e-fa7621b8b735"
+  }
+]

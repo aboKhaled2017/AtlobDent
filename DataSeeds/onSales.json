@@ -1,0 +1,22 @@
+[
+  {
+    "productId": "72c8b403-615e-0000-870e-fa7621b8b735",
+    "discount": 6,
+    "disPeriod": 72
+  },
+  {
+    "productId": "72c8b403-615e-9999-870e-fa7621b8b735",
+    "discount": 20,
+    "disPeriod": 24
+  },
+  {
+    "productId": "72c8b403-615e-1212-870e-fa7621b8b735",
+    "discount": 6,
+    "disPeriod": 48
+  },
+  {
+    "productId": "72c8b403-615e-1111-870e-fa7621b8b735",
+    "discount": 40,
+    "disPeriod": 50
+  }
+]

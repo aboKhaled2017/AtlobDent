@@ -1,0 +1,15 @@
+start cmd /k git show 8c305c4bb3f6a2ce478bcd628235034770edda34
+start cmd /k git show 8b4124a12e29913f70e7839c5e2039e277772592
+start cmd /k git show d16935fac7363aa30b742703263ecad3752c5262
+start cmd /k git show 413b0205408e3d4f70f84afce345bbb8a7602f3d
+start cmd /k git show 717b0285dceb51f3826ee4c530180afc1ce94b46
+start cmd /k git show 89fbfe46eef1c1c1b4554ed6bd35f66567011f02
+start cmd /k git show e98bc5452e87ee8f688f344f1e05ff2ea97653bd
+start cmd /k git show fffb65b055d246fadef4a4462744732ebb083273
+start cmd /k git show 08347a9cc45aa0ed3459d47fd91ecd7a4e12afee
+start cmd /k git show 949c5fc039862e0b1aabdf8240efb50ca219bbe2
+start cmd /k git show b2244e5d0dd297e039ae42f7830be3859d4cf44f
+start cmd /k git show de4c2427eea754314a8641b4dba31f483f1cd706
+start cmd /k git show 95fd258177ae2bed8a14a52ea5d1b80d18e247c1
+start cmd /k git show f995ae2ead669ad4f2f624c771d7e884b947c207
+start cmd /k git show 6bb6c1d6359772adf9945f5ec881b7e21cc6b5a0

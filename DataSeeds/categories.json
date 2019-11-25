@@ -1,0 +1,48 @@
+[
+  {
+    "id": "72c8b403-615e-4477-870e-fa7621b8b735",
+    "name": "main category 1",
+    "superId": null
+  },
+  {
+    "id": "72c8b403-615e-5555-870e-fa7621b8b735",
+    "name": "main category 2",
+    "superId": null
+  },
+  {
+    "id": "72c8b403-615e-6666-870e-fa7621b8b735",
+    "name": "main category 3",
+    "superId": null
+  },
+  {
+    "id": "72c8b403-615e-7777-870e-fa7621b8b735",
+    "name": "main category 4",
+    "superId": null
+  },
+
+  {
+    "id": "72c8b403-615e-4411-870e-fa7621b8b735",
+    "name": "sub1 of category 1",
+    "superId": "72c8b403-615e-4477-870e-fa7621b8b735"
+  },
+  {
+    "id": "72c8b403-615e-5522-870e-fa7621b8b735",
+    "name": "sub2 of category 1",
+    "superId": "72c8b403-615e-4477-870e-fa7621b8b735"
+  },
+  {
+    "id": "72c8b403-615e-6611-870e-fa7621b8b735",
+    "name": "sub1 of category 2",
+    "superId": "72c8b403-615e-5555-870e-fa7621b8b735"
+  },
+  {
+    "id": "72c8b403-615e-7722-870e-fa7621b8b735",
+    "name": "sub2 of category 2",
+    "superId": "72c8b403-615e-5555-870e-fa7621b8b735"
+  },
+  {
+    "id": "72c8b403-615e-1022-870e-fa7621b8b735",
+    "name": "sub1 of category 3",
+    "superId": "72c8b403-615e-6666-870e-fa7621b8b735"
+  }
+]
