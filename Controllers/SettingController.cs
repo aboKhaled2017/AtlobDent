@@ -14,7 +14,7 @@ namespace Atlob_Dent.Controllers
     [ApiController]
     public class SettingController : MainController
     {
-        public SettingController(Atlob_dentEntities context, ILogger<MainController> logger) : base(context, logger)
+        public SettingController(Atlob_dent_Context context, ILogger<MainController> logger) : base(context, logger)
         {
         }
         /// <summary>

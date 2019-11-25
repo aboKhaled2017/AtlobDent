@@ -13,8 +13,8 @@ namespace Atlob_Dent.Controllers
     public class MainController : ControllerBase
     {
         public readonly ILogger<MainController> _logger;
-        public readonly Atlob_dentEntities _context;
-        public MainController(Atlob_dentEntities context, ILogger<MainController> logger)
+        public readonly Atlob_dent_Context _context;
+        public MainController(Atlob_dent_Context context, ILogger<MainController> logger)
         {
             _context = context;
             _logger = logger;

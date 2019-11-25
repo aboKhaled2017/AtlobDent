@@ -19,7 +19,7 @@ namespace Atlob_Dent.Data
         [Phone]
         [Required]
         public string phone { get; set; }
-        [ForeignKey("phone")]
-        public User user { get; set; }
+        /*[ForeignKey("phone")]
+        public Customer customer { get; set; }*/
     }
 }

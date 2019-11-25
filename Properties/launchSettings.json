@@ -16,7 +16,7 @@
     "IIS Express": {
       "commandName": "IISExpress",
       "launchBrowser": true,
-      "launchUrl": "api/Atlob_product/OnSale",
+      "launchUrl": "api/Atlob_product/all",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       }

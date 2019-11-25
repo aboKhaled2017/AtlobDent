@@ -15,7 +15,7 @@ namespace Atlob_Dent.Controllers
     [ApiController]
     public class ProductController : MainController
     {
-        public ProductController(Atlob_dentEntities context, ILogger<MainController> logger) : base(context, logger)
+        public ProductController(Atlob_dent_Context context, ILogger<MainController> logger) : base(context, logger)
         {
         }
         #region Get all products

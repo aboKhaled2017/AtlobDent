@@ -9,11 +9,11 @@ namespace Atlob_Dent.Data
 {
     public class Admin
     {
-        [Key,Phone]
-        public string phone { get; set; }
+        [Key]
+        public string id { get; set; }
         [Required]
-        public string fullname { get; set; }
-        [Required]
-        public string role { get; set; } = "manager";
+        public string fullName { get; set; }
+        [ForeignKey("id")]
+        public ApplicationUser User { get; set; }
     }
 }

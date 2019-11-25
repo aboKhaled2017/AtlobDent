@@ -14,7 +14,7 @@ namespace Atlob_Dent.Controllers
     [ApiController]
     public class CompanyController : MainController
     {
-        public CompanyController(Atlob_dentEntities context, ILogger<MainController> logger) : base(context, logger)
+        public CompanyController(Atlob_dent_Context context, ILogger<MainController> logger) : base(context, logger)
         {
         }
         /// <summary>

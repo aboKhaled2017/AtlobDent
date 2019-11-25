@@ -8,13 +8,20 @@ namespace Atlob_Dent
 {
     public static class DBHelper
     {
-        public static void ResetData(Atlob_dentEntities context)
-        {
+        public static async Task ResetData(Atlob_dent_Context context)
+        { 
+            var userManager = ServiceHelper.GetUserManager();
+            var roleManager = ServiceHelper.GetRoleManager();
+            var customerUsers =await userManager.GetUsersInRoleAsync(GlobalVariables.CustomerRole);
+            foreach (var user in customerUsers)
+            {
+               await userManager.DeleteAsync(user);
+            }
             context.Comments.RemoveRange(context.Comments);
             context.SaveChanges();
-            context.Users.RemoveRange(context.Users);
+            /*context.Customers.RemoveRange(context.Customers);
             context.SaveChanges();
-            /*context.Orders.RemoveRange(context.Orders);
+            context.Orders.RemoveRange(context.Orders);
             context.SaveChanges();
             context.Products.RemoveRange(context.Products);
             context.SaveChanges();*/

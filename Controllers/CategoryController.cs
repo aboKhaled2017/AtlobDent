@@ -17,7 +17,7 @@ namespace Atlob_Dent.Controllers
     /// </summary>
     public class CategoryController : MainController
     {
-        public CategoryController(Atlob_dentEntities context, ILogger<MainController> logger) : base(context, logger)
+        public CategoryController(Atlob_dent_Context context, ILogger<MainController> logger) : base(context, logger)
         {
         }
         /// <summary>

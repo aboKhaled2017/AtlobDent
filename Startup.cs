@@ -6,7 +6,7 @@ using Atlob_Dent.Data;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
-
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -30,9 +30,12 @@ namespace Atlob_Dent
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddDbContext<Atlob_dentEntities>(options =>
+            services.AddDbContext<Atlob_dent_Context>(options =>
                options.UseSqlite(Configuration.GetConnectionString("Atlob_dentDbLite")));
             //options.UseSqlServer(Configuration.GetConnectionString("Atlob_dentDb")));
+            services.AddIdentity<ApplicationUser, IdentityRole>()
+                .AddEntityFrameworkStores<Atlob_dent_Context>()
+                .AddDefaultTokenProviders();
             services.AddCors(options => {
                 options.AddPolicy("CorePolicy", builder => {
                     builder.AllowAnyOrigin();

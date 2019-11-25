@@ -1,6 +1,8 @@
 ﻿using Atlob_Dent.Data;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using System;
@@ -19,9 +21,9 @@ namespace Atlob_Dent
             _serviceProvider = serviceProvider;
             _serviceScope=_serviceProvider.GetRequiredService<IServiceScopeFactory>().CreateScope();
         }
-        public static Atlob_dentEntities GetDbContext()
+        public static Atlob_dent_Context GetDbContext()
         {
-            return _serviceScope.ServiceProvider.GetService<Atlob_dentEntities>();
+            return _serviceScope.ServiceProvider.GetService<Atlob_dent_Context>();
         }
         public static IHostingEnvironment GetHostingEnv()
         {
@@ -34,6 +36,22 @@ namespace Atlob_Dent
         public static HttpContext GetHttpContext()
         {
             return _serviceScope.ServiceProvider.GetService<HttpContext>();
+        }
+        public static UserManager<ApplicationUser> GetUserManager()
+        {
+            return _serviceScope.ServiceProvider.GetService<UserManager<ApplicationUser>>();
+        }
+        public static RoleManager<IdentityRole> GetRoleManager()
+        {
+            return _serviceScope.ServiceProvider.GetService<RoleManager<IdentityRole>>();
+        }
+        public static SignInManager<ApplicationUser> GetSignInManager()
+        {
+            return _serviceScope.ServiceProvider.GetService<SignInManager<ApplicationUser>>();
+        }
+        public static IConfiguration GetConfiguration()
+        {
+            return _serviceScope.ServiceProvider.GetService<IConfiguration>();
         }
     }
 }
