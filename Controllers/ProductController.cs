@@ -498,7 +498,6 @@ namespace Atlob_Dent.Controllers
             }
         }
         #endregion
-        public void aa() { }
         // POST api/values
         [HttpPost]
         public void Post([FromBody] string value)
