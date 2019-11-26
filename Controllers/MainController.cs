@@ -19,6 +19,10 @@ namespace Atlob_Dent.Controllers
             _context = context;
             _logger = logger;
         }
+        public MainController(Atlob_dent_Context context)
+        {
+            _context = context;
+        }
         public void logError(string mess)
         {
             _logger.LogError("=========================================================================="+mess);

@@ -23,6 +23,7 @@ namespace Atlob_Dent
             SeedCategories();
             SeedProducts();
             SeedOnSales();
+            SeedOrders();
         }       
         private static void SeedProducts()
         {
@@ -33,6 +34,26 @@ namespace Atlob_Dent
             if (!context.Products.Any())
             {
                 context.Products.AddRange(Products);
+                context.SaveChanges();
+            }
+        }
+        private static void SeedOrders()
+        {
+            var fileJsonPath = Path.Combine(ServiceHelper.GetHostingEnv().ContentRootPath, "DataSeeds", "orders.json");
+            var jsonData = File.ReadAllText(fileJsonPath);
+            List<Order> Orders =
+                JsonConvert.DeserializeObject<List<Order>>(jsonData);
+            int i = 0;
+            var customersId = context.Customers.Select(c => c.id).ToList();
+            foreach (var order in Orders)
+            {
+                order.customerId = customersId.ElementAt(i);
+                ++i;
+                if (customersId.Count-1 < i) i = 0;
+            }
+            if (!context.Orders.Any())
+            {
+                context.Orders.AddRange(Orders);
                 context.SaveChanges();
             }
         }
@@ -92,6 +113,7 @@ namespace Atlob_Dent
                 var newCustomer = new Customer {
                     id = newUser.Id,
                     phone = customer.phone,
+                    fullName=customer.phone,
                     consumedProducts = customer.consumedProducts,
                     User=newUser
                 };

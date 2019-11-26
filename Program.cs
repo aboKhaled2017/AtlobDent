@@ -20,7 +20,8 @@ namespace Atlob_Dent
         public static IWebHostBuilder CreateWebHostBuilder(string[] args) =>
             WebHost.CreateDefaultBuilder(args)
             .CaptureStartupErrors(true)
-            .UseUrls("http://*:4000;https://*:4001")
+            //.UseUrls("http://*:4000;https://*:4001")
+            .UseUrls("http://*:4000")
                 //.UseSetting(WebHostDefaults.DetailedErrorsKey,"true")
                 .UseStartup<Startup>();
     }

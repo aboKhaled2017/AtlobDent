@@ -9,14 +9,14 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Atlob_Dent.Migrations
 {
     [DbContext(typeof(Atlob_dent_Context))]
-    [Migration("20191125175741_InitialContext")]
-    partial class InitialContext
+    [Migration("20191126103718_updateOrdersTable")]
+    partial class updateOrdersTable
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "2.1.11-servicing-32099");
+                .HasAnnotation("ProductVersion", "2.2.6-servicing-10079");
 
             modelBuilder.Entity("Atlob_Dent.Data.Admin", b =>
                 {
@@ -134,6 +134,9 @@ namespace Atlob_Dent.Migrations
 
                     b.Property<int>("consumedProducts");
 
+                    b.Property<string>("fullName")
+                        .IsRequired();
+
                     b.Property<string>("otherPhone");
 
                     b.Property<string>("phone")
@@ -165,21 +168,22 @@ namespace Atlob_Dent.Migrations
                     b.Property<string>("address")
                         .IsRequired();
 
-                    b.Property<string>("fullname")
+                    b.Property<string>("customerId")
                         .IsRequired();
 
                     b.Property<DateTime>("orderDate");
-
-                    b.Property<string>("phone")
-                        .IsRequired();
 
                     b.Property<Guid>("productId");
 
                     b.Property<int>("quantity");
 
+                    b.Property<byte>("sizeIndex");
+
                     b.Property<int>("state");
 
                     b.HasKey("id");
+
+                    b.HasIndex("customerId");
 
                     b.HasIndex("productId");
 
@@ -205,7 +209,7 @@ namespace Atlob_Dent.Migrations
                     b.Property<string>("name")
                         .IsRequired();
 
-                    b.Property<int>("orderCount");
+                    b.Property<int>("ordersCount");
 
                     b.Property<string>("prices")
                         .IsRequired();
@@ -366,6 +370,11 @@ namespace Atlob_Dent.Migrations
 
             modelBuilder.Entity("Atlob_Dent.Data.Order", b =>
                 {
+                    b.HasOne("Atlob_Dent.Data.Customer", "customer")
+                        .WithMany("orders")
+                        .HasForeignKey("customerId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
                     b.HasOne("Atlob_Dent.Data.Product", "product")
                         .WithMany()
                         .HasForeignKey("productId")

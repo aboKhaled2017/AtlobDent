@@ -37,7 +37,7 @@ namespace Atlob_Dent.Data
         public Company company { get; set; }
         public double version { get; set; } = 1;
         public int seen { get; set; } = 0;
-        public int orderCount { get; set; } = 0;
+        public int ordersCount { get; set; } = 0;
         [DataType(DataType.Date)]
         public DateTime createdDate { get; set; } = DateTime.Now;
     }

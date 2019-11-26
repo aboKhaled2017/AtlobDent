@@ -16,5 +16,11 @@ namespace Atlob_Dent.Helpers
         public virtual bool status { get; set; } = false;
         public virtual string message { get; set; } = "unhandled error in server";
     }
+    public class NotValidDataResponse:BadResponseResult
+    {
+        public override string message { get; set; } = "data is not valid";
+        public object errorFields { get; set; }
+        public int errorsFieldsCount { get; set; }
+    }
 
 }

@@ -285,7 +285,7 @@ namespace Atlob_Dent.Controllers
             try
             {
                 var data = _context.Products
-                 .OrderByDescending(p => p.orderCount)
+                 .OrderByDescending(p => p.ordersCount)
                  .GetResponsePages(null, 0, by, HttpContext);
                 return Ok(data);
             }
@@ -316,7 +316,7 @@ namespace Atlob_Dent.Controllers
                     return Ok("[]");
                 if ((pageNumber * pageLength) > by) pageLength = by-(pageLength*(pageNumber-1));
                 var data = _context.Products
-                 .OrderByDescending(p => p.orderCount)
+                 .OrderByDescending(p => p.ordersCount)
                  .GetResponsePages(by, (((int)pageNumber - 1) * (int)pageLength), (int)pageLength, HttpContext);
                 return Ok(data);
             }
@@ -368,7 +368,7 @@ namespace Atlob_Dent.Controllers
                     return Ok("[]");
                 if ((pageNumber * pageLength) > by) pageLength = by - (pageLength * (pageNumber - 1));
                 var data = _context.Products
-                 .OrderBy(p => p.orderCount)
+                 .OrderBy(p => p.ordersCount)
                  .GetResponsePages(by, (((int)pageNumber - 1) * (int)pageLength), (int)pageLength, HttpContext);
                 return Ok(data);
             }
@@ -482,7 +482,7 @@ namespace Atlob_Dent.Controllers
             {
                 s = s.Trim();
                 if (pageNumber == null && pageLength == null) return _BySearch(s);
-                var data = searchFor(s).AsQueryable().OrderBy(p=>p.orderCount);                   
+                var data = searchFor(s).AsQueryable().OrderBy(p=>p.ordersCount);                   
                 int totalOfProducts = data.Count();
                 pageNumber = pageNumber ?? 1;
                 pageLength = pageLength ?? 10;
@@ -498,22 +498,5 @@ namespace Atlob_Dent.Controllers
             }
         }
         #endregion
-        // POST api/values
-        [HttpPost]
-        public void Post([FromBody] string value)
-        {
-        }
-
-        // PUT api/values/5
-        [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
-        {
-        }
-
-        // DELETE api/values/5
-        [HttpDelete("{id}")]
-        public void Delete(int id)
-        {
-        }
     }
 }

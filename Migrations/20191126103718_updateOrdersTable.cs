@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace Atlob_Dent.Migrations
 {
-    public partial class InitialContext : Migration
+    public partial class updateOrdersTable : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -220,6 +220,7 @@ namespace Atlob_Dent.Migrations
                 columns: table => new
                 {
                     id = table.Column<string>(nullable: false),
+                    fullName = table.Column<string>(nullable: false),
                     phone = table.Column<string>(nullable: false),
                     otherPhone = table.Column<string>(nullable: true),
                     consumedProducts = table.Column<int>(nullable: false)
@@ -249,7 +250,7 @@ namespace Atlob_Dent.Migrations
                     companyId = table.Column<Guid>(nullable: false),
                     version = table.Column<double>(nullable: false),
                     seen = table.Column<int>(nullable: false),
-                    orderCount = table.Column<int>(nullable: false),
+                    ordersCount = table.Column<int>(nullable: false),
                     createdDate = table.Column<DateTime>(nullable: false)
                 },
                 constraints: table =>
@@ -293,17 +294,23 @@ namespace Atlob_Dent.Migrations
                 columns: table => new
                 {
                     id = table.Column<Guid>(nullable: false),
-                    fullname = table.Column<string>(nullable: false),
-                    phone = table.Column<string>(nullable: false),
                     address = table.Column<string>(nullable: false),
                     quantity = table.Column<int>(nullable: false),
-                    productId = table.Column<Guid>(nullable: false),
+                    sizeIndex = table.Column<byte>(nullable: false),
                     orderDate = table.Column<DateTime>(nullable: false),
-                    state = table.Column<int>(nullable: false)
+                    state = table.Column<int>(nullable: false),
+                    productId = table.Column<Guid>(nullable: false),
+                    customerId = table.Column<string>(nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Orders", x => x.id);
+                    table.ForeignKey(
+                        name: "FK_Orders_Customers_customerId",
+                        column: x => x.customerId,
+                        principalTable: "Customers",
+                        principalColumn: "id",
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_Orders_Products_productId",
                         column: x => x.productId,
@@ -355,6 +362,11 @@ namespace Atlob_Dent.Migrations
                 column: "superId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Orders_customerId",
+                table: "Orders",
+                column: "customerId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Orders_productId",
                 table: "Orders",
                 column: "productId");
@@ -394,9 +406,6 @@ namespace Atlob_Dent.Migrations
                 name: "Comments");
 
             migrationBuilder.DropTable(
-                name: "Customers");
-
-            migrationBuilder.DropTable(
                 name: "OnSales");
 
             migrationBuilder.DropTable(
@@ -406,10 +415,13 @@ namespace Atlob_Dent.Migrations
                 name: "AspNetRoles");
 
             migrationBuilder.DropTable(
-                name: "AspNetUsers");
+                name: "Customers");
 
             migrationBuilder.DropTable(
                 name: "Products");
+
+            migrationBuilder.DropTable(
+                name: "AspNetUsers");
 
             migrationBuilder.DropTable(
                 name: "Categories");

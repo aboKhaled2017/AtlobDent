@@ -9,6 +9,9 @@ namespace Atlob_Dent
     {
         notReviewed = 0,
         reviewed = 1,
-        canceled = 2,
+        recieved=2,
+        canceled = 3,
+        refused=4,
+        notFound=5
     }
 }
