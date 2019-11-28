@@ -3,20 +3,23 @@ using System;
 using Atlob_Dent.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Atlob_Dent.Migrations
 {
     [DbContext(typeof(Atlob_dent_Context))]
-    [Migration("20191126103718_updateOrdersTable")]
-    partial class updateOrdersTable
+    [Migration("20191128084855_init")]
+    partial class init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "2.2.6-servicing-10079");
+                .HasAnnotation("ProductVersion", "2.2.6-servicing-10079")
+                .HasAnnotation("Relational:MaxIdentifierLength", 128)
+                .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
             modelBuilder.Entity("Atlob_Dent.Data.Admin", b =>
                 {
@@ -75,7 +78,8 @@ namespace Atlob_Dent.Migrations
 
                     b.HasIndex("NormalizedUserName")
                         .IsUnique()
-                        .HasName("UserNameIndex");
+                        .HasName("UserNameIndex")
+                        .HasFilter("[NormalizedUserName] IS NOT NULL");
 
                     b.ToTable("AspNetUsers");
                 });
@@ -183,8 +187,6 @@ namespace Atlob_Dent.Migrations
 
                     b.HasKey("id");
 
-                    b.HasIndex("customerId");
-
                     b.HasIndex("productId");
 
                     b.ToTable("Orders");
@@ -216,7 +218,7 @@ namespace Atlob_Dent.Migrations
 
                     b.Property<int>("seen");
 
-                    b.Property<string>("size")
+                    b.Property<string>("sizes")
                         .IsRequired();
 
                     b.Property<double>("version");
@@ -248,7 +250,8 @@ namespace Atlob_Dent.Migrations
 
                     b.HasIndex("NormalizedName")
                         .IsUnique()
-                        .HasName("RoleNameIndex");
+                        .HasName("RoleNameIndex")
+                        .HasFilter("[NormalizedName] IS NOT NULL");
 
                     b.ToTable("AspNetRoles");
                 });
@@ -256,7 +259,8 @@ namespace Atlob_Dent.Migrations
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
                 {
                     b.Property<int>("Id")
-                        .ValueGeneratedOnAdd();
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<string>("ClaimType");
 
@@ -275,7 +279,8 @@ namespace Atlob_Dent.Migrations
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
                 {
                     b.Property<int>("Id")
-                        .ValueGeneratedOnAdd();
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<string>("ClaimType");
 
@@ -370,11 +375,6 @@ namespace Atlob_Dent.Migrations
 
             modelBuilder.Entity("Atlob_Dent.Data.Order", b =>
                 {
-                    b.HasOne("Atlob_Dent.Data.Customer", "customer")
-                        .WithMany("orders")
-                        .HasForeignKey("customerId")
-                        .OnDelete(DeleteBehavior.Cascade);
-
                     b.HasOne("Atlob_Dent.Data.Product", "product")
                         .WithMany()
                         .HasForeignKey("productId")

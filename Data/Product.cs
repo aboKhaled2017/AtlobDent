@@ -22,7 +22,7 @@ namespace Atlob_Dent.Data
         [Required]
         public string images_url { get; set; }
         [Required]
-        public string size { get; set; } 
+        public string sizes { get; set; } 
         [DataType(DataType.Text)]
         public string desc { get; set; }
         [Required]
@@ -36,8 +36,9 @@ namespace Atlob_Dent.Data
         [InverseProperty("products")]
         public Company company { get; set; }
         public double version { get; set; } = 1;
-        public int seen { get; set; } = 0;
-        public int ordersCount { get; set; } = 0;
+        public long seen { get; set; } = 0;
+        public long ordersCount { get; set; } = 0;
+        public long consumedCount { get; set; } = 0;
         [DataType(DataType.Date)]
         public DateTime createdDate { get; set; } = DateTime.Now;
     }

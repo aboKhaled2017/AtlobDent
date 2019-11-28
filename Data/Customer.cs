@@ -20,7 +20,7 @@ namespace Atlob_Dent.Data
         public int consumedProducts { get; set; } = 0;
         [ForeignKey("id")]
         public ApplicationUser User { get; set; }
-        [InverseProperty("customer")]
-        public ICollection<Order> orders { get; set; }
+        /*[InverseProperty("customer")]
+        public ICollection<Order> orders { get; set; }*/
     }
 }

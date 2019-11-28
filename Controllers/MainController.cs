@@ -25,8 +25,8 @@ namespace Atlob_Dent.Controllers
         }
         public void logError(string mess)
         {
-            _logger.LogError("=========================================================================="+mess);
+            _logger.LogError("==========================================================================" + mess);
         }
-       
+
     }
 }

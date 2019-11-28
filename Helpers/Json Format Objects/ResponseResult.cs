@@ -8,13 +8,18 @@ namespace Atlob_Dent.Helpers
     public class ResponseResult
     {
         public virtual bool status { get; set; } = true;
-        public virtual string message { get; set; }
+        public virtual string message { get; set; }      
+    }
+    public class SuccessResponseResult:ResponseResult
+    {
+        public override bool status { get; set; } = true;
+        public override string message { get; set; }= "the request has been proccessed successfully";
         public object data { get; set; }
     }
-    public class BadResponseResult
+    public class BadResponseResult:ResponseResult
     {
-        public virtual bool status { get; set; } = false;
-        public virtual string message { get; set; } = "unhandled error in server";
+        public override bool status { get; set; } = false;
+        public override string message { get; set; } = "unhandled error in server";
     }
     public class NotValidDataResponse:BadResponseResult
     {

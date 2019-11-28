@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Atlob_Dent.Data;
+using Atlob_Dent.Helpers;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -31,11 +32,12 @@ namespace Atlob_Dent
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddDbContext<Atlob_dent_Context>(options =>
-               options.UseSqlite(Configuration.GetConnectionString("Atlob_dentDbLite")));
-            //options.UseSqlServer(Configuration.GetConnectionString("Atlob_dentDb")));
+            //  options.UseSqlite(Configuration.GetConnectionString("Atlob_dentDbLite")),ServiceLifetime.Scoped);
+             options.UseSqlServer(Configuration.GetConnectionString("Atlob_dentDb")), ServiceLifetime.Scoped);
             services.AddIdentity<ApplicationUser, IdentityRole>()
                 .AddEntityFrameworkStores<Atlob_dent_Context>()
                 .AddDefaultTokenProviders();
+            services.AddTransient<TransactionHelper>();
             services.AddCors(options => {
                 options.AddPolicy("CorePolicy", builder => {
                     builder.AllowAnyOrigin();
@@ -64,7 +66,9 @@ namespace Atlob_Dent
             //app.UseHttpsRedirection();
             app.UseCors("CorePolicy");
             app.UseStaticFiles();
-            app.UseMvc();
+            app.UseMvc(routes=> {
+               
+            });
         }
     }
 }

@@ -1,9 +1,10 @@
 ﻿using System;
+using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace Atlob_Dent.Migrations
 {
-    public partial class updateOrdersTable : Migration
+    public partial class init : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -96,7 +97,7 @@ namespace Atlob_Dent.Migrations
                 columns: table => new
                 {
                     Id = table.Column<int>(nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
+                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
                     RoleId = table.Column<string>(nullable: false),
                     ClaimType = table.Column<string>(nullable: true),
                     ClaimValue = table.Column<string>(nullable: true)
@@ -135,7 +136,7 @@ namespace Atlob_Dent.Migrations
                 columns: table => new
                 {
                     Id = table.Column<int>(nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
+                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
                     UserId = table.Column<string>(nullable: false),
                     ClaimType = table.Column<string>(nullable: true),
                     ClaimValue = table.Column<string>(nullable: true)
@@ -244,7 +245,7 @@ namespace Atlob_Dent.Migrations
                     name = table.Column<string>(nullable: false),
                     prices = table.Column<string>(nullable: false),
                     images_url = table.Column<string>(nullable: false),
-                    size = table.Column<string>(nullable: false),
+                    sizes = table.Column<string>(nullable: false),
                     desc = table.Column<string>(nullable: true),
                     categoryId = table.Column<Guid>(nullable: false),
                     companyId = table.Column<Guid>(nullable: false),
@@ -306,12 +307,6 @@ namespace Atlob_Dent.Migrations
                 {
                     table.PrimaryKey("PK_Orders", x => x.id);
                     table.ForeignKey(
-                        name: "FK_Orders_Customers_customerId",
-                        column: x => x.customerId,
-                        principalTable: "Customers",
-                        principalColumn: "id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
                         name: "FK_Orders_Products_productId",
                         column: x => x.productId,
                         principalTable: "Products",
@@ -328,7 +323,8 @@ namespace Atlob_Dent.Migrations
                 name: "RoleNameIndex",
                 table: "AspNetRoles",
                 column: "NormalizedName",
-                unique: true);
+                unique: true,
+                filter: "[NormalizedName] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetUserClaims_UserId",
@@ -354,17 +350,13 @@ namespace Atlob_Dent.Migrations
                 name: "UserNameIndex",
                 table: "AspNetUsers",
                 column: "NormalizedUserName",
-                unique: true);
+                unique: true,
+                filter: "[NormalizedUserName] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Categories_superId",
                 table: "Categories",
                 column: "superId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Orders_customerId",
-                table: "Orders",
-                column: "customerId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Orders_productId",
@@ -406,6 +398,9 @@ namespace Atlob_Dent.Migrations
                 name: "Comments");
 
             migrationBuilder.DropTable(
+                name: "Customers");
+
+            migrationBuilder.DropTable(
                 name: "OnSales");
 
             migrationBuilder.DropTable(
@@ -415,13 +410,10 @@ namespace Atlob_Dent.Migrations
                 name: "AspNetRoles");
 
             migrationBuilder.DropTable(
-                name: "Customers");
+                name: "AspNetUsers");
 
             migrationBuilder.DropTable(
                 name: "Products");
-
-            migrationBuilder.DropTable(
-                name: "AspNetUsers");
 
             migrationBuilder.DropTable(
                 name: "Categories");

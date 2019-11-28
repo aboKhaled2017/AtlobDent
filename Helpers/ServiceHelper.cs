@@ -1,4 +1,5 @@
 ﻿using Atlob_Dent.Data;
+using Atlob_Dent.Helpers;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
@@ -52,6 +53,10 @@ namespace Atlob_Dent
         public static IConfiguration GetConfiguration()
         {
             return _serviceScope.ServiceProvider.GetService<IConfiguration>();
+        }
+        public static TransactionHelper GetTransactionHelper()
+        {
+            return _serviceScope.ServiceProvider.GetService<TransactionHelper>();
         }
     }
 }

@@ -13,7 +13,6 @@
 
   <ItemGroup>
     <Folder Include="CRUDControllers\CRUDCustomerControllers\" />
-    <Folder Include="Migrations\" />
     <Folder Include="wwwroot\images\companies\" />
   </ItemGroup>
 

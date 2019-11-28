@@ -32,8 +32,9 @@ namespace Atlob_Dent.Data
         public Product product { get; set; }
         [Required]
         public string customerId { get; set; }
-        [ForeignKey("customerId")]
-        public Customer customer { get; set; }
+        /*[ForeignKey("customerId")]
+        [InverseProperty("orders")]
+        public Customer customer { get; set; }*/
 
     }
 }

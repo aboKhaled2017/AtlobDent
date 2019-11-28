@@ -55,5 +55,9 @@ namespace Atlob_Dent.CUDControllers
         public void Delete(int id)
         {
         }
+        public bool IsProductExists(Guid productId)
+        {
+            return _context.Products.Any(p => p.id == productId);
+        }
     }
 }

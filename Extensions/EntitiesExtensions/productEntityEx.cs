@@ -54,7 +54,7 @@ namespace Atlob_Dent
                     companyId = p.companyId,
                     companyName = p.company.name,
                     images_url = p.images_url,
-                    size = p.size
+                    sizes = p.sizes
                 });
         }
         public static IQueryable<ProductModel> _selectCommonProductsStamp(this IEnumerable<Product> productsModels)
@@ -131,7 +131,7 @@ namespace Atlob_Dent
                     companyId = p.product.companyId,
                     companyName = p.product.company.name,
                     images_url = p.product.images_url,
-                    size = p.product.size,
+                    size = p.product.sizes,
                     discount=p.discount,
                     disPeriod=p.disPeriod
                 });
@@ -170,6 +170,36 @@ namespace Atlob_Dent
                 total = total,
                 data = data
             };
+        }
+        #endregion
+
+        #region converting product property value to other format
+        public static List<string> ConvertToListOfStringValues(this string prop)
+        {
+            var values = new List<string>();
+            prop.Replace("[", "").Replace("]", "").Replace("'", "").Split(',').ToList()
+            .ForEach(val => {
+                values.Add(val);
+            });
+            return values;
+        }
+        public static List<string> ConvertToListOfStringValues(this string prop,Func<string,string>format)
+        {
+            var values = new List<string>();
+            prop.Replace("[", "").Replace("]", "").Replace("'", "").Split(',').ToList()
+            .ForEach(val => {
+                values.Add(format(val));
+            });
+            return values;
+        }
+        public static List<double> ConvertToListOfDoubleValues(this string prop)
+        {
+            var values = new List<double>();
+            prop.Replace("[", "").Replace("]", "").Replace("'", "").Split(',').ToList()
+            .ForEach(val => {
+                values.Add(double.Parse(val));
+            });
+            return values;
         }
         #endregion
     }

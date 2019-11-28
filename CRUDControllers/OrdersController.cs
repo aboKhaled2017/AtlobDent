@@ -10,6 +10,7 @@ using Atlob_Dent.Controllers;
 using Microsoft.Extensions.Logging;
 using Atlob_Dent.Models;
 using Atlob_Dent.Helpers;
+using Atlob_Dent.Services;
 
 namespace Atlob_Dent.CRUDControllers
 {
@@ -25,6 +26,7 @@ namespace Atlob_Dent.CRUDControllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Order>>> GetOrders()
         {
+            
             return await _context.Orders.ToListAsync();
         }
 
@@ -72,25 +74,15 @@ namespace Atlob_Dent.CRUDControllers
             return NoContent();
         }
         [HttpPost]
-        public async Task<ActionResult<Order>> PostOrder(CartCheckoutModel cartCheckoutModel)
+        public async Task<ActionResult<Order>> PostOrder([FromBody]CartCheckoutModel cartCheckoutModel)
         {
-            try
-            {
-                var result =await CustomerHelper.RegisterCustomerIfNotExists(cartCheckoutModel.customer,cartCheckoutModel.orders.Count);
-                result.Item2.RollBackAction();
-                /*if (ModelState.IsValid)
-                {
-                    _context.Orders.Add(order);
-                    await _context.SaveChangesAsync();
-                    ModelState.Values
-                    return CreatedAtAction("GetOrder", new { id = order.id }, order);
-                }*/
-                return BadRequest(new NotValidDataResponse {errorFields=ModelState.Values,errorsFieldsCount=ModelState.ErrorCount});
-            }
-            catch
-            {
-                return BadRequest(new BadResponseResult {});
-            }
+           // bool isModelValid = !TryValidateModel(cartCheckoutModel, nameof(CartCheckoutModel));
+            if (!ModelState.IsValid)
+                return BadRequest(new NotValidDataResponse());
+            var makeOrdersResponseResult =await new OrdersService(_context, cartCheckoutModel).ProcessOrderRequest();
+            if(makeOrdersResponseResult.status)
+                return Ok(makeOrdersResponseResult);
+                return BadRequest(makeOrdersResponseResult);
         }
 
         // DELETE: api/Orders/5

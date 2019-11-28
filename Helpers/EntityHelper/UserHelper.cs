@@ -11,20 +11,18 @@ namespace Atlob_Dent.Helpers
     public static class UserHelper
     {
         private static UserManager<ApplicationUser> _userManger = ServiceHelper.GetUserManager();
-        public static ApplicationUser createCustomerUserByPhone(string phone)
+        public static async Task<ApplicationUser> createCustomerUserByPhone(string phone)
         {
+            var identityResult = new IdentityResult();
                 var user = new ApplicationUser { 
             SecurityStamp=Guid.NewGuid().ToString(),
             UserName=phone,
             PhoneNumber=phone
             };
-            _userManger.CreateAsync(user,phone);
-            _userManger.AddToRoleAsync(user, GlobalVariables.CustomerRole);
-            return user;
-        }
-        public async static Task RollBackUser(ApplicationUser user)
-        {
-           await _userManger.DeleteAsync(user);
+            identityResult = await _userManger.CreateAsync(user, "Customer@123");
+            if(identityResult.Succeeded)
+                identityResult= await _userManger.AddToRoleAsync(user, GlobalVariables.CustomerRole);
+            return identityResult.Succeeded?user:null;
         }
     }
 }

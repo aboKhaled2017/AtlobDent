@@ -22,21 +22,14 @@ namespace Atlob_Dent
                 companyId = productModel.companyId,
                 companyName = productModel.companyName,
                 version = productModel.version,
-                prices = new List<double>()
-            };
-            var images = productModel.images_url.Replace("[", "").Replace("]", "").Replace("'", "");
-            var sizes = productModel.size.Replace("[", "").Replace("]", "").Replace("'", "");
-            var prices = productModel.prices.Replace("[", "").Replace("]", "");
-            exModel.images_url = images.Split(',');
-            prices.Split(',').ToList().ForEach(price =>
-            {
-                exModel.prices.Add(double.Parse(price));
-            });
-            for (int i = 0; i < exModel.images_url.Length; i++)
-            {
-                exModel.images_url[i] = string.Format("{0}://{1}/images/products/{2}", httpContext.Request.Scheme, httpContext.Request.Host, exModel.images_url[i].Trim());
-            }
-            exModel.sizes = sizes.Split(',');
+                prices = productModel.prices.ConvertToListOfDoubleValues(),
+                sizes= productModel.sizes.ConvertToListOfStringValues(),
+                images_url = productModel.images_url.ConvertToListOfStringValues(val=> 
+                string.Format("{0}://{1}/images/products/{2}",
+                httpContext.Request.Scheme,
+                httpContext.Request.Host,
+                val.Trim())),
+            };            
             return exModel;
         }
         public static IEnumerable<ExportedProductModel> GetExportedProductModels(this IEnumerable<ProductModel> productsModels, HttpContext httpContext)

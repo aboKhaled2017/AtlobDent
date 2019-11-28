@@ -11,7 +11,7 @@ namespace Atlob_Dent.Models
         public string name { get; set; }
         public string prices { get; set; }
         public string images_url { get; set; }
-        public string size { get; set; }
+        public string sizes { get; set; }
         public string desc { get; set; }
         //public Guid categoryId { get; set; }
         public Guid companyId { get; set; }
@@ -23,8 +23,8 @@ namespace Atlob_Dent.Models
         public Guid id { get; set; }
         public string name { get; set; }
         public List<double> prices { get; set; }
-        public string[] images_url { get; set; }
-        public string[] sizes { get; set; }
+        public List<string> images_url { get; set; }
+        public List<string> sizes { get; set; }
         public string desc { get; set; }
         //public Guid categoryId { get; set; }
         public Guid companyId { get; set; }

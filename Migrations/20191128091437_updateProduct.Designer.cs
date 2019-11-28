@@ -4,14 +4,16 @@ using Atlob_Dent.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Atlob_Dent.Migrations
 {
     [DbContext(typeof(Atlob_dent_Context))]
-    partial class Atlob_dent_ContextModelSnapshot : ModelSnapshot
+    [Migration("20191128091437_updateProduct")]
+    partial class updateProduct
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
