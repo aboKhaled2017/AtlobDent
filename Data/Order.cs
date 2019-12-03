@@ -24,8 +24,8 @@ namespace Atlob_Dent.Data
         [Required]
         public int quantity { get; set; }
         public byte sizeIndex { get; set; }
-        public DateTime orderDate { get; set; } = DateTime.Now;
-        public OrderState state { get; set; } = OrderState.notReviewed;
+        public DateTime created { get; set; } = DateTime.Now;
+        public OrderState status { get; set; } = OrderState.notReviewed;
         [Required]
         public Guid productId { get; set; }
         [ForeignKey("productId")]

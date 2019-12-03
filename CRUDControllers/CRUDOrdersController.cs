@@ -11,14 +11,16 @@ using Microsoft.Extensions.Logging;
 using Atlob_Dent.Models;
 using Atlob_Dent.Helpers;
 using Atlob_Dent.Services;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Atlob_Dent.CRUDControllers
 {
-    [Route("api/CRUD/[controller]")]
+    [Route("api/CRUD/Orders")]
     [ApiController]
-    public class OrdersController : MainController
+    [Authorize]
+    public class CRUDOrdersController : MainController
     {
-        public OrdersController(Atlob_dent_Context context) : base(context)
+        public CRUDOrdersController(Atlob_dent_Context context) : base(context)
         {
         }
 
@@ -73,6 +75,12 @@ namespace Atlob_Dent.CRUDControllers
 
             return NoContent();
         }
+        /// <summary>
+        /// to make order
+        /// </summary>
+        /// <example>domain/api/CRUD/Orders</example>
+        /// <param name="cartCheckoutModel"></param>
+        /// <returns></returns>
         [HttpPost]
         public async Task<ActionResult<Order>> PostOrder([FromBody]CartCheckoutModel cartCheckoutModel)
         {

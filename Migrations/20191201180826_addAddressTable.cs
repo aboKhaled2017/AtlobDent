@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace Atlob_Dent.Migrations
 {
-    public partial class init : Migration
+    public partial class addAddressTable : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -223,7 +223,6 @@ namespace Atlob_Dent.Migrations
                     id = table.Column<string>(nullable: false),
                     fullName = table.Column<string>(nullable: false),
                     phone = table.Column<string>(nullable: false),
-                    otherPhone = table.Column<string>(nullable: true),
                     consumedProducts = table.Column<int>(nullable: false)
                 },
                 constraints: table =>
@@ -249,9 +248,10 @@ namespace Atlob_Dent.Migrations
                     desc = table.Column<string>(nullable: true),
                     categoryId = table.Column<Guid>(nullable: false),
                     companyId = table.Column<Guid>(nullable: false),
-                    version = table.Column<double>(nullable: false),
-                    seen = table.Column<int>(nullable: false),
-                    ordersCount = table.Column<int>(nullable: false),
+                    version = table.Column<string>(maxLength: 10, nullable: true),
+                    viewed = table.Column<long>(nullable: false),
+                    ordersCount = table.Column<long>(nullable: false),
+                    consumedCount = table.Column<long>(nullable: false),
                     createdDate = table.Column<DateTime>(nullable: false)
                 },
                 constraints: table =>
@@ -267,6 +267,32 @@ namespace Atlob_Dent.Migrations
                         name: "FK_Products_Companies_companyId",
                         column: x => x.companyId,
                         principalTable: "Companies",
+                        principalColumn: "id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Address",
+                columns: table => new
+                {
+                    id = table.Column<Guid>(nullable: false),
+                    fullName = table.Column<string>(nullable: false),
+                    country = table.Column<string>(nullable: false),
+                    city = table.Column<string>(nullable: false),
+                    streetInfo = table.Column<string>(nullable: false),
+                    buildingNumber = table.Column<string>(nullable: true),
+                    locationType = table.Column<string>(nullable: false),
+                    phone = table.Column<string>(nullable: false),
+                    notes = table.Column<string>(nullable: true),
+                    customerId = table.Column<string>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Address", x => x.id);
+                    table.ForeignKey(
+                        name: "FK_Address_Customers_customerId",
+                        column: x => x.customerId,
+                        principalTable: "Customers",
                         principalColumn: "id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -298,8 +324,8 @@ namespace Atlob_Dent.Migrations
                     address = table.Column<string>(nullable: false),
                     quantity = table.Column<int>(nullable: false),
                     sizeIndex = table.Column<byte>(nullable: false),
-                    orderDate = table.Column<DateTime>(nullable: false),
-                    state = table.Column<int>(nullable: false),
+                    created = table.Column<DateTime>(nullable: false),
+                    status = table.Column<int>(nullable: false),
                     productId = table.Column<Guid>(nullable: false),
                     customerId = table.Column<string>(nullable: false)
                 },
@@ -313,6 +339,11 @@ namespace Atlob_Dent.Migrations
                         principalColumn: "id",
                         onDelete: ReferentialAction.Cascade);
                 });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Address_customerId",
+                table: "Address",
+                column: "customerId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetRoleClaims_RoleId",
@@ -377,6 +408,9 @@ namespace Atlob_Dent.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
+                name: "Address");
+
+            migrationBuilder.DropTable(
                 name: "Admins");
 
             migrationBuilder.DropTable(
@@ -398,22 +432,22 @@ namespace Atlob_Dent.Migrations
                 name: "Comments");
 
             migrationBuilder.DropTable(
-                name: "Customers");
-
-            migrationBuilder.DropTable(
                 name: "OnSales");
 
             migrationBuilder.DropTable(
                 name: "Orders");
 
             migrationBuilder.DropTable(
+                name: "Customers");
+
+            migrationBuilder.DropTable(
                 name: "AspNetRoles");
 
             migrationBuilder.DropTable(
-                name: "AspNetUsers");
+                name: "Products");
 
             migrationBuilder.DropTable(
-                name: "Products");
+                name: "AspNetUsers");
 
             migrationBuilder.DropTable(
                 name: "Categories");

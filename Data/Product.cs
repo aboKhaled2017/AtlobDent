@@ -35,8 +35,9 @@ namespace Atlob_Dent.Data
         [ForeignKey("companyId")]
         [InverseProperty("products")]
         public Company company { get; set; }
-        public double version { get; set; } = 1;
-        public long seen { get; set; } = 0;
+        [StringLength(10)]
+        public string version { get; set; } = "1";
+        public long viewed { get; set; } = 0;
         public long ordersCount { get; set; } = 0;
         public long consumedCount { get; set; } = 0;
         [DataType(DataType.Date)]

@@ -19,6 +19,43 @@ namespace Atlob_Dent.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
+            modelBuilder.Entity("Atlob_Dent.Data.Address", b =>
+                {
+                    b.Property<Guid>("id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<string>("buildingNumber");
+
+                    b.Property<string>("city")
+                        .IsRequired();
+
+                    b.Property<string>("country")
+                        .IsRequired();
+
+                    b.Property<string>("customerId")
+                        .IsRequired();
+
+                    b.Property<string>("fullName")
+                        .IsRequired();
+
+                    b.Property<string>("locationType")
+                        .IsRequired();
+
+                    b.Property<string>("notes");
+
+                    b.Property<string>("phone")
+                        .IsRequired();
+
+                    b.Property<string>("streetInfo")
+                        .IsRequired();
+
+                    b.HasKey("id");
+
+                    b.HasIndex("customerId");
+
+                    b.ToTable("Address");
+                });
+
             modelBuilder.Entity("Atlob_Dent.Data.Admin", b =>
                 {
                     b.Property<string>("id");
@@ -139,8 +176,6 @@ namespace Atlob_Dent.Migrations
                     b.Property<string>("fullName")
                         .IsRequired();
 
-                    b.Property<string>("otherPhone");
-
                     b.Property<string>("phone")
                         .IsRequired();
 
@@ -170,10 +205,10 @@ namespace Atlob_Dent.Migrations
                     b.Property<string>("address")
                         .IsRequired();
 
+                    b.Property<DateTime>("created");
+
                     b.Property<string>("customerId")
                         .IsRequired();
-
-                    b.Property<DateTime>("orderDate");
 
                     b.Property<Guid>("productId");
 
@@ -181,7 +216,7 @@ namespace Atlob_Dent.Migrations
 
                     b.Property<byte>("sizeIndex");
 
-                    b.Property<int>("state");
+                    b.Property<int>("status");
 
                     b.HasKey("id");
 
@@ -216,12 +251,13 @@ namespace Atlob_Dent.Migrations
                     b.Property<string>("prices")
                         .IsRequired();
 
-                    b.Property<long>("seen");
-
                     b.Property<string>("sizes")
                         .IsRequired();
 
-                    b.Property<double>("version");
+                    b.Property<string>("version")
+                        .HasMaxLength(10);
+
+                    b.Property<long>("viewed");
 
                     b.HasKey("id");
 
@@ -340,6 +376,14 @@ namespace Atlob_Dent.Migrations
                     b.HasKey("UserId", "LoginProvider", "Name");
 
                     b.ToTable("AspNetUserTokens");
+                });
+
+            modelBuilder.Entity("Atlob_Dent.Data.Address", b =>
+                {
+                    b.HasOne("Atlob_Dent.Data.Customer", "customer")
+                        .WithMany("addresses")
+                        .HasForeignKey("customerId")
+                        .OnDelete(DeleteBehavior.Cascade);
                 });
 
             modelBuilder.Entity("Atlob_Dent.Data.Admin", b =>

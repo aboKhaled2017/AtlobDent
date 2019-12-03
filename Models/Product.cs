@@ -16,7 +16,7 @@ namespace Atlob_Dent.Models
         //public Guid categoryId { get; set; }
         public Guid companyId { get; set; }
         public string  companyName { get; set; }
-        public double version { get; set; }
+        public string version { get; set; }
     }
     public class ExportedProductModel
     {
@@ -29,7 +29,7 @@ namespace Atlob_Dent.Models
         //public Guid categoryId { get; set; }
         public Guid companyId { get; set; }
         public string companyName { get; set; }
-        public double version { get; set; } 
+        public string version { get; set; } 
     }
     public class OnSaleProductModel
     {
@@ -42,7 +42,7 @@ namespace Atlob_Dent.Models
         //public Guid categoryId { get; set; }
         public Guid companyId { get; set; }
         public string companyName { get; set; }
-        public double version { get; set; }
+        public string version { get; set; }
         public double discount { get; set; }
         public int disPeriod { get; set; }
     }
@@ -57,7 +57,7 @@ namespace Atlob_Dent.Models
         //public Guid categoryId { get; set; }
         public Guid companyId { get; set; }
         public string companyName { get; set; }
-        public double version { get; set; }
+        public string version { get; set; }
         public int disPeriod { get; set; }
         public List<double> newPrices { get; set; }
     }

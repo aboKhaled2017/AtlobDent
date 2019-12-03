@@ -33,8 +33,8 @@ namespace Atlob_Dent.CUDControllers
                 var TargetProduct = _context.Products.Find(id);
                 if (TargetProduct == null)
                     return NotFound(new BadResponseResult{ message=string.Format("the id ${0} is not found",id)});
-                TargetProduct.seen += 1;
-                _context.Entry(TargetProduct).Property(p => p.seen).IsModified = true;
+                TargetProduct.viewed += 1;
+                _context.Entry(TargetProduct).Property(p => p.viewed).IsModified = true;
                 await _context.SaveChangesAsync();
                 return Ok();
             }

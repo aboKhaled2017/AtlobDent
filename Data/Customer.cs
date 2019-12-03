@@ -9,6 +9,10 @@ namespace Atlob_Dent.Data
 {
     public class Customer
     {
+        public Customer()
+        {
+            addresses = new HashSet<Address>();
+        }
         [Key]
         public string id { get; set; }
         [Required]
@@ -16,10 +20,11 @@ namespace Atlob_Dent.Data
         [Phone]
         [Required]
         public string phone { get; set; }
-        public string otherPhone { get; set; }
         public int consumedProducts { get; set; } = 0;
         [ForeignKey("id")]
         public ApplicationUser User { get; set; }
+        [InverseProperty("customer")]
+        public ICollection<Address> addresses { get; set; }
         /*[InverseProperty("customer")]
         public ICollection<Order> orders { get; set; }*/
     }
