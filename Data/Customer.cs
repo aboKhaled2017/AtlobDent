@@ -17,9 +17,7 @@ namespace Atlob_Dent.Data
         public string id { get; set; }
         [Required]
         public string fullName { get; set; }
-        [Phone]
-        [Required]
-        public string phone { get; set; }
+        public string imgSrc { get; set; }
         public int consumedProducts { get; set; } = 0;
         [ForeignKey("id")]
         public ApplicationUser User { get; set; }

@@ -15,6 +15,10 @@ namespace Atlob_Dent
     {
         private static readonly Atlob_dent_Context context = ServiceHelper.GetDbContext();
         private static readonly UserManager<ApplicationUser> _userManager = ServiceHelper.GetUserManager();
+        private class customerType {
+            public string fullName { get; set; }
+            public string email { get; set; }
+        };
         public static void SeedToAllTables()
         {
             SeedCustomers().Wait();
@@ -98,23 +102,24 @@ namespace Atlob_Dent
             if (context.Customers.Any()) return;
                 var fileJsonPath = Path.Combine(ServiceHelper.GetHostingEnv().ContentRootPath, "DataSeeds", "customers.json");
             var jsonData = File.ReadAllText(fileJsonPath);
-            List<Customer> customers =
-                JsonConvert.DeserializeObject<List<Customer>>(jsonData);
+                var customers=JsonConvert.DeserializeObject<List<customerType>>(jsonData);
+            var isConfimed = false;
             foreach (var customer in customers)
             {
+                isConfimed = !isConfimed;
                 var newUser = new ApplicationUser {
-                PhoneNumber=customer.phone,
-                SecurityStamp=Guid.NewGuid().ToString(),
-                UserName=customer.phone
+                Email= customer.email,
+                UserName=customer.email,
+                //SecurityStamp=Guid.NewGuid().ToString(),
+                EmailConfirmed=isConfimed
                 };
-                await _userManager.AddPasswordAsync(newUser, "Customer@123");
                 await _userManager.CreateAsync(newUser);
+                await _userManager.AddPasswordAsync(newUser, "Customer@123");               
                 await _userManager.AddToRoleAsync(newUser, GlobalVariables.CustomerRole);
                 var newCustomer = new Customer {
                     id = newUser.Id,
-                    phone = customer.phone,
-                    fullName=customer.phone,
-                    consumedProducts = customer.consumedProducts,
+                    fullName= customer.fullName,
+                    imgSrc="/images/Users",
                     User=newUser
                 };
                 context.Customers.Add(newCustomer);

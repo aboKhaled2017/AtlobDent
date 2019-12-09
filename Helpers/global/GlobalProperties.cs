@@ -1,4 +1,5 @@
 ﻿using Atlob_Dent.Data;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
  
@@ -22,6 +23,9 @@ namespace Atlob_Dent
         }
         public static ApplicationUser MainAdminUser { get { return _getMainAdminUser(); } set { } }
         public static Admin MainAdmin { get { return _context.Admins.Find(MainAdminUser.Id); } set { } }
-        
+        public static string GetUsersImagesPath (HttpContext httpContext)
+        {
+            return $"{httpContext.Request.Scheme}://{httpContext.Request.Host}/images/Users/";
+        }
     }
 }

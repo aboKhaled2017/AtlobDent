@@ -11,5 +11,9 @@ namespace Atlob_Dent
        email,
        userName
     }
-
+    public enum UserType
+    {
+        localUser,
+        externalUser
+    }
 }

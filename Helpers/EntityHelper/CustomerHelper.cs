@@ -21,9 +21,9 @@ namespace Atlob_Dent.Helpers
         public static async Task<Customer> RegisterCustomerIfNotExists(CartCustomerModel cartCustomerModel,int ordersCount)
         {
                       
-            if (_context.Customers.Any(c=>c.phone==cartCustomerModel.phone))
+            if (_context.Customers.Any(c=>c.fullName==cartCustomerModel.phone))//error
             {
-                var registeredCustomer = await _context.Customers.FirstOrDefaultAsync(c => c.phone == cartCustomerModel.phone);
+                var registeredCustomer = await _context.Customers.FirstOrDefaultAsync(c => c.fullName == cartCustomerModel.phone);
                 registeredCustomer.consumedProducts += ordersCount;
                 _context.Entry(registeredCustomer).Property(p => p.consumedProducts).IsModified = true;
                 
@@ -35,7 +35,6 @@ namespace Atlob_Dent.Helpers
             {
                 id = user.Id,
                 fullName = cartCustomerModel.fullName,
-                phone = cartCustomerModel.phone,
                 consumedProducts = ordersCount,
                 User=user
             };

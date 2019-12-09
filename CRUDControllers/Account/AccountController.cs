@@ -1,36 +1,38 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.IdentityModel.Tokens.Jwt;
-using System.Linq;
 using System.Threading.Tasks;
 using Atlob_Dent.Data;
+using Atlob_Dent.Helpers;
 using Atlob_Dent.Models.AccountModels;
+using Atlob_Dent.Models.ExternalAuthModels;
 using Atlob_Dent.Services;
+using Atlob_Dent.Services.AuthServices;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 
 namespace Atlob_Dent.CRUDControllers.Account
 {
     [Route("api/[controller]/[action]")]
     [ApiController]
-    public class AccountController : ControllerBase
+    public class AccountController : SharedAPIController
     {
         private readonly UserManager<ApplicationUser> _userManager;
-        private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly IEmailSender _emailSender;
-
+        private readonly AccountService _accountService;
+        private readonly TransactionHelper _transactionHelper;
         public AccountController(
             UserManager<ApplicationUser> userManager,
-            SignInManager<ApplicationUser> signInManager,
-            IEmailSender emailSender)
+            IEmailSender emailSender,
+            AccountService accountService,
+            TransactionHelper transactionHelper)
         {
             _userManager = userManager;
-            _signInManager = signInManager;
             _emailSender = emailSender;
+            _accountService = accountService;
+            _transactionHelper = transactionHelper;
         }
+        #region Regular signin/signup
         /// <summary>
         /// login user to account
         /// </summary>
@@ -39,16 +41,27 @@ namespace Atlob_Dent.CRUDControllers.Account
         /// <returns></returns>
         [HttpPost]
         [AllowAnonymous]
-        public async Task<IActionResult> Login(LoginModel model)
-        {            
+        public async Task<IActionResult> SignIn(LoginModel model)
+        {
             if (ModelState.IsValid)
             {
-                var user =await _userManager.FindByEmailAsync(model.Email);
-                if(user!=null&await _userManager.CheckPasswordAsync(user, model.Password))
+                try
                 {
-                    return Ok(SecurityHelper.GetTokenResponse(user.UserName));
+                    _accountService.SetCurrentContext(HttpContext, Url);
+                    var user = await _userManager.FindByEmailAsync(model.Email);
+                    if (await _userManager.UserIdentityExists(user,model.Password,GlobalVariables.CustomerRole))
+                    {
+                        var response = _accountService.GetSigningInResponseModel(user, GlobalVariables.CustomerRole);
+                        _transactionHelper.CommitChanges();
+                        return Ok(response);
+                    }
+                    return Unauthorized(new UnauthorizedObjectResult("email or password was invalid"));
                 }
-                return Unauthorized(new UnauthorizedObjectResult("email or password was invalid"));
+                catch (Exception ex)
+                {
+                    _transactionHelper.RollBackChanges();
+                    return BadRequest(ex.Message);
+                }
             }
             return BadRequest(ModelState);
         }
@@ -60,64 +73,79 @@ namespace Atlob_Dent.CRUDControllers.Account
         /// <returns></returns>
         [HttpPost]
         [AllowAnonymous]
-        public async Task<IActionResult> Register(RegisterModel model)
+        public async Task<IActionResult> SignUp(RegisterModel model)
         {
-            
+
             if (ModelState.IsValid)
             {
-                var user = new ApplicationUser { UserName = model.email, Email = model.email,PhoneNumber=model.phone };
-                var result = await _userManager.CreateAsync(user, model.password);
-                if (result.Succeeded)
+                try
                 {
-                    var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
-                    var callbackUrl = Url.EmailConfirmationLink(user.Id.ToString(), code, Request.Scheme);
-                    _emailSender.SendEmailConfirmation(model.email, callbackUrl);
-                    return Ok(SecurityHelper.GetTokenResponse(user.UserName));
+                    _accountService.SetCurrentContext(HttpContext, Url);
+                    var response=  await _accountService.SignUpAsync(model,(anyErrors,resultError)
+                       => {if(anyErrors) AddErrors(resultError);});
+                    if (response != null)
+                    {
+                        _transactionHelper.CommitChanges();
+                        return Ok(response);
+                    }
+                    _transactionHelper.RollBackChanges();
                 }
-                AddErrors(result);
+                catch (Exception ex)
+                {
+                    _transactionHelper.RollBackChanges();
+                    return BadRequest(ex.Message);
+                }                
+            }
+            return BadRequest(ModelState);
+        }
+        #endregion
+        #region external signin
+        [HttpPost]
+        [AllowAnonymous]
+        public async Task<IActionResult> FacebbookSign(FacebookLoginModel model)
+        {
+
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    _accountService.SetCurrentContext(HttpContext, Url);
+                    var response = await _accountService.FacebookLoginAsync(model);
+                    _transactionHelper.CommitChanges();
+                    return Ok(response);
+                }
+                catch (Exception ex)
+                {
+                    _transactionHelper.RollBackChanges();
+                  return  BadRequest(ex.Message);
+                }
             }
             return BadRequest(ModelState);
         }
         [HttpPost]
         [AllowAnonymous]
-        [ValidateAntiForgeryToken]
-        public IActionResult ExternalLogin(string provider, string returnUrl = null)
+        public async Task<IActionResult> GoogleSign(GoogleLoginModel model)
         {
-            // Request a redirect to the external login provider.
-            var redirectUrl = Url.Action("nameof(ExternalLoginCallback)", "Account", new { returnUrl });
-            var properties = _signInManager.ConfigureExternalAuthenticationProperties(provider, redirectUrl);
-            return Challenge(properties, provider);
-        }
 
-        
-        [HttpPost]
-        [AllowAnonymous]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> ExternalLoginConfirmation(ExternalLoginModel model, string returnUrl = null)
-        {
             if (ModelState.IsValid)
             {
-                // Get the information about the user from the external login provider
-                var info = await _signInManager.GetExternalLoginInfoAsync();
-                if (info == null)
+                try
                 {
-                    throw new ApplicationException("Error loading external login information during confirmation.");
+                    _accountService.SetCurrentContext(HttpContext, Url);
+                    var response = await _accountService.GoogleLoginAsync(model);
+                    _transactionHelper.CommitChanges();
+                    return Ok(response);
                 }
-                var user = new ApplicationUser { UserName = model.Email, Email = model.Email };
-                var result = await _userManager.CreateAsync(user);
-                if (result.Succeeded)
+                catch (Exception ex)
                 {
-                    result = await _userManager.AddLoginAsync(user, info);
-                    if (result.Succeeded)
-                    {
-                        await _signInManager.SignInAsync(user, isPersistent: false);
-                        return Ok(returnUrl);
-                    }
+                    _transactionHelper.RollBackChanges();
+                   return BadRequest(ex.Message);
                 }
-                AddErrors(result);
             }
-            return Ok();
+            return BadRequest(ModelState);
         }
+        #endregion
+        #region for email settings
         /// <summary>
         /// confirm user email account
         /// </summary>
@@ -139,8 +167,10 @@ namespace Atlob_Dent.CRUDControllers.Account
                 return false;
             }
             var result = await _userManager.ConfirmEmailAsync(user, code);
-            return result.Succeeded ? true :false;
+            return result.Succeeded ? true : false;
         }
+        #endregion
+        #region for password setting
         /// <summary>
         /// try to retrieve user's forgotton password
         /// </summary>
@@ -164,7 +194,7 @@ namespace Atlob_Dent.CRUDControllers.Account
                 // visit https://go.microsoft.com/fwlink/?LinkID=532713
                 var code = await _userManager.GeneratePasswordResetTokenAsync(user);
                 //var callbackUrl = Url.ResetPasswordCallbackLink(user.Id.ToString(), code, Request.Scheme);
-               _emailSender.SendEmail(model.Email,"Reset password", $"the reset password code is {code}");
+                await _emailSender.SendEmailAsync(model.Email, "Reset password", $"the reset password code is {code}");
                 return Ok($"a code {code} is sent to this user email {model.Email}");
             }
 
@@ -199,16 +229,6 @@ namespace Atlob_Dent.CRUDControllers.Account
             AddErrors(result);
             return BadRequest(new BadRequestObjectResult($"faild to create password for user {user.UserName}"));
         }
-        #region Helpers
-
-        private void AddErrors(IdentityResult result)
-        {
-            foreach (var error in result.Errors)
-            {
-                ModelState.AddModelError(string.Empty, error.Description);
-            }
-        }
-
         #endregion
     }
 }

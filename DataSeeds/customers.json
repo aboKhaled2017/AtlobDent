@@ -1,14 +1,14 @@
 [
   {
-    "phone": "01152506434",
-    "consumedProducts": 4
+    "fullName": "mohamed khaled",
+    "email": "mmm@gmail.com"
   },
   {
-    "phone": "01188806434",
-    "consumedProducts": 1
+    "fullName": "mohamed2 khaled",
+    "email": "mmm1@gmail.com"
   },
   {
-    "phone": "01152506787",
-    "consumedProducts": 2
+    "fullName": "mohamed1 khaled",
+    "email": "mmm2@gmail.com"
   }
 ]

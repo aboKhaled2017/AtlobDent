@@ -13,10 +13,14 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+ 
 
-namespace Atlob_Dent.Services
+namespace Atlob_Dent.CRUDControllers
 {
-    public class ManageAccountService:Controller
+    [Authorize]
+    [Route("api/[controller]/[action]")]
+    [ApiController]
+    public class ManageController : ControllerBase
     {
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly SignInManager<ApplicationUser> _signInManager;
@@ -27,11 +31,11 @@ namespace Atlob_Dent.Services
         private const string AuthenticatorUriFormat = "otpauth://totp/{0}:{1}?secret={2}&issuer={0}&digits=6";
         private const string RecoveryCodesKey = nameof(RecoveryCodesKey);
 
-        public ManageAccountService(
+        public ManageController(
           UserManager<ApplicationUser> userManager,
           SignInManager<ApplicationUser> signInManager,
           IEmailSender emailSender,
-          ILogger<ManageAccountService> logger,
+          ILogger<ManageController> logger,
           UrlEncoder urlEncoder)
         {
             _userManager = userManager;
@@ -40,92 +44,85 @@ namespace Atlob_Dent.Services
             _logger = logger;
             _urlEncoder = urlEncoder;
         }
-      
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<bool> SendVerificationEmail(ApplicationUser user)
-        {
-            var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
-            var callbackUrl = Url.EmailConfirmationLink(user.Id.ToString(), code, Request.Scheme);
-            var email = user.Email;
-           await _emailSender.SendEmailAsync(email,"", callbackUrl);
-            return true;
-        }
 
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> ChangePassword(ChangePasswordModel model)
+        public async Task<IActionResult> Index(IndexModel model)
         {
             if (!ModelState.IsValid)
             {
-                return BadRequest(ModelState);
+                return BadRequest(model);
             }
 
             var user = await _userManager.GetUserAsync(User);
             if (user == null)
             {
-                throw new ApplicationException($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
+                return BadRequest($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
+            }
+
+            var email = user.Email;
+            if (model.Email != email)
+            {
+                var setEmailResult = await _userManager.SetEmailAsync(user, model.Email);
+                if (!setEmailResult.Succeeded)
+                {
+                    return BadRequest($"Unexpected error occurred setting email for user with ID '{user.Id}'.");
+                }
+            }
+
+            var phoneNumber = user.PhoneNumber;
+            if (model.PhoneNumber != phoneNumber)
+            {
+                var setPhoneResult = await _userManager.SetPhoneNumberAsync(user, model.PhoneNumber);
+                if (!setPhoneResult.Succeeded)
+                {
+                    throw new ApplicationException($"Unexpected error occurred setting phone number for user with ID '{user.Id}'.");
+                }
+            }
+            return Ok("Your profile has been updated");
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> SendVerificationEmail(IndexModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(model);
+            }
+
+            var user = await _userManager.GetUserAsync(User);
+            if (user == null)
+            {
+                return BadRequest($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
+            }
+
+            var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
+            var callbackUrl = Url.EmailConfirmationLink(user.Id.ToString(), code, Request.Scheme);
+            var email = user.Email;
+           await _emailSender.SendEmailAsync(email,"", callbackUrl);
+            return Ok("Verification email sent. Please check your email.");
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> ChangePassword(ChangePasswordModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(model);
+            }
+
+            var user = await _userManager.GetUserAsync(User);
+            if (user == null)
+            {
+               return BadRequest($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
             }
 
             var changePasswordResult = await _userManager.ChangePasswordAsync(user, model.OldPassword, model.NewPassword);
             if (!changePasswordResult.Succeeded)
             {
                 AddErrors(changePasswordResult);
-                return View(model);
+                return BadRequest(model);
             }
-
-            await _signInManager.SignInAsync(user, isPersistent: false);
-            _logger.LogInformation("User changed their password successfully.");;
-
-            return RedirectToAction(nameof(ChangePassword));
-        }
-
-        [HttpGet]
-        public async Task<IActionResult> SetPassword()
-        {
-            var user = await _userManager.GetUserAsync(User);
-            if (user == null)
-            {
-                throw new ApplicationException($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
-            }
-
-            var hasPassword = await _userManager.HasPasswordAsync(user);
-
-            if (hasPassword)
-            {
-                return RedirectToAction(nameof(ChangePassword));
-            }
-
-            var model = new SetPasswordModel {  };
-            return View(model);
-        }
-
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> SetPassword(SetPasswordModel model)
-        {
-            if (!ModelState.IsValid)
-            {
-                return View(model);
-            }
-
-            var user = await _userManager.GetUserAsync(User);
-            if (user == null)
-            {
-                throw new ApplicationException($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
-            }
-
-            var addPasswordResult = await _userManager.AddPasswordAsync(user, model.NewPassword);
-            if (!addPasswordResult.Succeeded)
-            {
-                AddErrors(addPasswordResult);
-                return View(model);
-            }
-
-            await _signInManager.SignInAsync(user, isPersistent: false);
-           // StatusMessage = "Your password has been set.";
-
-            return RedirectToAction(nameof(SetPassword));
+            return Ok("Your password has been changed");
         }
 
         [HttpGet]
@@ -134,7 +131,7 @@ namespace Atlob_Dent.Services
             var user = await _userManager.GetUserAsync(User);
             if (user == null)
             {
-                throw new ApplicationException($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
+                return BadRequest($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
             }
 
             var model = new ExternalLoginsModel { CurrentLogins = await _userManager.GetLoginsAsync(user) };
@@ -142,21 +139,7 @@ namespace Atlob_Dent.Services
                 .Where(auth => model.CurrentLogins.All(ul => auth.Name != ul.LoginProvider))
                 .ToList();
             model.ShowRemoveButton = await _userManager.HasPasswordAsync(user) || model.CurrentLogins.Count > 1;
-
-            return View(model);
-        }
-
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> LinkLogin(string provider)
-        {
-            // Clear the existing external cookie to ensure a clean login process
-            await HttpContext.SignOutAsync(IdentityConstants.ExternalScheme);
-
-            // Request a redirect to the external login provider to link a login for the current user
-            var redirectUrl = Url.Action(nameof(LinkLoginCallback));
-            var properties = _signInManager.ConfigureExternalAuthenticationProperties(provider, redirectUrl, _userManager.GetUserId(User));
-            return new ChallengeResult(provider, properties);
+            return Ok(model);
         }
 
         [HttpGet]
@@ -182,6 +165,8 @@ namespace Atlob_Dent.Services
 
             // Clear the existing external cookie to ensure a clean login process
             await HttpContext.SignOutAsync(IdentityConstants.ExternalScheme);
+
+            //StatusMessage = "The external login was added.";
             return RedirectToAction(nameof(ExternalLogins));
         }
 
@@ -202,63 +187,8 @@ namespace Atlob_Dent.Services
             }
 
             await _signInManager.SignInAsync(user, isPersistent: false);
-            return RedirectToAction(nameof(ExternalLogins));
-        }
-
-        [HttpGet]
-        public async Task<IActionResult> TwoFactorAuthentication()
-        {
-            var user = await _userManager.GetUserAsync(User);
-            if (user == null)
-            {
-                throw new ApplicationException($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
-            }
-
-            var model = new TwoFactorAuthenticationModel
-            {
-                HasAuthenticator = await _userManager.GetAuthenticatorKeyAsync(user) != null,
-                Is2faEnabled = user.TwoFactorEnabled,
-                RecoveryCodesLeft = await _userManager.CountRecoveryCodesAsync(user),
-            };
-
-            return View(model);
-        }
-
-        [HttpGet]
-        public async Task<IActionResult> Disable2faWarning()
-        {
-            var user = await _userManager.GetUserAsync(User);
-            if (user == null)
-            {
-                throw new ApplicationException($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
-            }
-
-            if (!user.TwoFactorEnabled)
-            {
-                throw new ApplicationException($"Unexpected error occured disabling 2FA for user with ID '{user.Id}'.");
-            }
-
-            return View(nameof(Disable2fa));
-        }
-
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Disable2fa()
-        {
-            var user = await _userManager.GetUserAsync(User);
-            if (user == null)
-            {
-                throw new ApplicationException($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
-            }
-
-            var disable2faResult = await _userManager.SetTwoFactorEnabledAsync(user, false);
-            if (!disable2faResult.Succeeded)
-            {
-                throw new ApplicationException($"Unexpected error occured disabling 2FA for user with ID '{user.Id}'.");
-            }
-
-            _logger.LogInformation("User with ID {UserId} has disabled 2fa.", user.Id);
-            return RedirectToAction(nameof(TwoFactorAuthentication));
+          //  StatusMessage = "The external login was removed.";
+            return Ok(nameof(ExternalLogins));
         }
 
         [HttpGet]
@@ -273,11 +203,10 @@ namespace Atlob_Dent.Services
             var model = new EnableAuthenticatorModel();
             await LoadSharedKeyAndQrCodeUriAsync(user, model);
 
-            return View(model);
+            return Ok(model);
         }
 
         [HttpPost]
-        [ValidateAntiForgeryToken]
         public async Task<IActionResult> EnableAuthenticator(EnableAuthenticatorModel model)
         {
             var user = await _userManager.GetUserAsync(User);
@@ -289,7 +218,7 @@ namespace Atlob_Dent.Services
             if (!ModelState.IsValid)
             {
                 await LoadSharedKeyAndQrCodeUriAsync(user, model);
-                return View(model);
+                return BadRequest(model);
             }
 
             // Strip spaces and hypens
@@ -302,38 +231,24 @@ namespace Atlob_Dent.Services
             {
                 ModelState.AddModelError("Code", "Verification code is invalid.");
                 await LoadSharedKeyAndQrCodeUriAsync(user, model);
-                return View(model);
+                return BadRequest(model);
             }
 
             await _userManager.SetTwoFactorEnabledAsync(user, true);
             _logger.LogInformation("User with ID {UserId} has enabled 2FA with an authenticator app.", user.Id);
             var recoveryCodes = await _userManager.GenerateNewTwoFactorRecoveryCodesAsync(user, 10);
-            TempData[RecoveryCodesKey] = recoveryCodes.ToArray();
+            //TempData[RecoveryCodesKey] = recoveryCodes.ToArray();
 
-            return RedirectToAction(nameof(ShowRecoveryCodes));
-        }
-
-        [HttpGet]
-        public IActionResult ShowRecoveryCodes()
-        {
-            var recoveryCodes = (string[])TempData[RecoveryCodesKey];
-            if (recoveryCodes == null)
-            {
-                return RedirectToAction(nameof(TwoFactorAuthentication));
-            }
-
-            var model = new ShowRecoveryCodesModel { RecoveryCodes = recoveryCodes };
-            return View(model);
+            return RedirectToAction("");
         }
 
         [HttpGet]
         public IActionResult ResetAuthenticatorWarning()
         {
-            return View(nameof(ResetAuthenticator));
+            return Ok(nameof(ResetAuthenticator));
         }
 
         [HttpPost]
-        [ValidateAntiForgeryToken]
         public async Task<IActionResult> ResetAuthenticator()
         {
             var user = await _userManager.GetUserAsync(User);
@@ -363,11 +278,10 @@ namespace Atlob_Dent.Services
                 throw new ApplicationException($"Cannot generate recovery codes for user with ID '{user.Id}' because they do not have 2FA enabled.");
             }
 
-            return View(nameof(GenerateRecoveryCodes));
+            return Ok(nameof(GenerateRecoveryCodes));
         }
 
         [HttpPost]
-        [ValidateAntiForgeryToken]
         public async Task<IActionResult> GenerateRecoveryCodes()
         {
             var user = await _userManager.GetUserAsync(User);
@@ -386,7 +300,7 @@ namespace Atlob_Dent.Services
 
             var model = new ShowRecoveryCodesModel { RecoveryCodes = recoveryCodes.ToArray() };
 
-            return View(nameof(ShowRecoveryCodes), model);
+            return Ok("");
         }
 
         #region Helpers

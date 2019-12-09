@@ -15,12 +15,16 @@ namespace Atlob_Dent
 {
     public static class ServiceHelper
     {
+        private static IHttpContextAccessor _httpContextAccessor { get; set; }
         private static IServiceProvider _serviceProvider { get; set; }
         private static IServiceScope _serviceScope{get;set;}
         public static void IntializeServiceProvider(IServiceProvider serviceProvider)
         {
             _serviceProvider = serviceProvider;
             _serviceScope=_serviceProvider.GetRequiredService<IServiceScopeFactory>().CreateScope();
+        }
+        public static HttpContext GetCurrentHttpContext() {
+            return _serviceScope.ServiceProvider.GetService<IHttpContextAccessor>().HttpContext;
         }
         public static Atlob_dent_Context GetDbContext()
         {
@@ -33,10 +37,6 @@ namespace Atlob_Dent
         public static ILogger<T> GetLogger<T>()
         {
             return _serviceScope.ServiceProvider.GetService<ILogger<T>>();
-        }
-        public static HttpContext GetHttpContext()
-        {
-            return _serviceScope.ServiceProvider.GetService<HttpContext>();
         }
         public static UserManager<ApplicationUser> GetUserManager()
         {

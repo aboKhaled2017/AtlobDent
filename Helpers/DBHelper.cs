@@ -9,11 +9,10 @@ namespace Atlob_Dent
     public static class DBHelper
     {
         public static async Task ResetData(Atlob_dent_Context context)
-        { 
+        {
             var userManager = ServiceHelper.GetUserManager();
-            var roleManager = ServiceHelper.GetRoleManager();
-            var customerUsers =await userManager.GetUsersInRoleAsync(GlobalVariables.CustomerRole);
-            foreach (var user in customerUsers)
+            var customerUsers =await  userManager.GetUsersInRoleAsync(GlobalVariables.CustomerRole);
+            foreach (var user in  customerUsers)
             {
                await userManager.DeleteAsync(user);
             }

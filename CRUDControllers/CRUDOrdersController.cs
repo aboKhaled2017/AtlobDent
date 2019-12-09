@@ -28,7 +28,7 @@ namespace Atlob_Dent.CRUDControllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Order>>> GetOrders()
         {
-            
+               var a = User;
             return await _context.Orders.ToListAsync();
         }
 

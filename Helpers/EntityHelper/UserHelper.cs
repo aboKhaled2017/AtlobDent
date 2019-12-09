@@ -24,5 +24,19 @@ namespace Atlob_Dent.Helpers
                 identityResult= await _userManger.AddToRoleAsync(user, GlobalVariables.CustomerRole);
             return identityResult.Succeeded?user:null;
         }
+        public static async Task<ApplicationUser> createCustomerUserByEmail(string email)
+        {
+            var identityResult = new IdentityResult();
+            var user = new ApplicationUser
+            {
+                SecurityStamp = Guid.NewGuid().ToString(),
+                Email = email,
+                UserName = email
+            };
+            identityResult = await _userManger.CreateAsync(user, "Customer@123");
+            if (identityResult.Succeeded)
+                identityResult = await _userManger.AddToRoleAsync(user, GlobalVariables.CustomerRole);
+            return identityResult.Succeeded ? user : null;
+        }
     }
 }

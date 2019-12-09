@@ -12,7 +12,7 @@ using Microsoft.Extensions.Logging;
 namespace Atlob_Dent.CUDControllers
 {
     [Route("api/CRUD/Product/[action]")]
-    [ApiController]
+    [ApiController]   
     public class CRUDProductController : MainController
     {
         public CRUDProductController(Atlob_dent_Context context, ILogger<MainController> logger) : base(context, logger)
