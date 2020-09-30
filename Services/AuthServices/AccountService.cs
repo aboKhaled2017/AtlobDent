@@ -190,9 +190,10 @@ namespace Atlob_Dent.Services.AuthServices
                 result = await _userManager.AddToRoleAsync(user, GlobalVariables.CustomerRole);
                 if (result.Succeeded)
                 {
-                    var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
-                    var callbackUrl = _Url.EmailConfirmationLink(user.Id.ToString(), code, _httpContext.Request.Scheme);
-                    await _emailSender.SendEmailAsync(model.email,"confirm your email", callbackUrl);
+                    //var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
+                    //var callbackUrl = _Url.EmailConfirmationLink(user.Id.ToString(), code, _httpContext.Request.Scheme);
+                    var code = await _userManager.GenerateEmailConfirmationCodeAsync(user);
+                    await _emailSender.SendEmailAsync(model.email,"get code to confirm your email",$"the code to confirm email is {code}");
                     await RegisterCustomerUser(user, model);
                     ActionOnResult(false, result);
                     return GetSigningInResponseModel(user, GlobalVariables.CustomerRole,UserType.localUser);
@@ -214,7 +215,7 @@ namespace Atlob_Dent.Services.AuthServices
                     imgSrc = customerData.imgSrc,
                     hasPassword=userType==UserType.externalUser?false:true
                 },
-                accessToken=_jWThandlerService.CreateAccessToken(user,role)
+                accessToken=_jWThandlerService.CreateAccessToken(user,role,userType)
             };
         }
         public async Task SendEmailConfirmationAsync(string email, string callbackUrl)

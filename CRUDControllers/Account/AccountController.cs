@@ -51,11 +51,15 @@ namespace Atlob_Dent.CRUDControllers.Account
                     var user = await _userManager.FindByEmailAsync(model.Email);
                     if (await _userManager.UserIdentityExists(user,model.Password,GlobalVariables.CustomerRole))
                     {
+                        if (!user.EmailConfirmed)
+                        {
+                            return Unauthorized(new BadResponseResult { message = "email is not confirmed" });
+                        }
                         var response = _accountService.GetSigningInResponseModel(user, GlobalVariables.CustomerRole);
                         _transactionHelper.CommitChanges();
                         return Ok(response);
                     }
-                    return Unauthorized(new UnauthorizedObjectResult("email or password was invalid"));
+                    return NotFound(new UnauthorizedObjectResult("email or password was invalid"));
                 }
                 catch (Exception ex)
                 {
@@ -68,7 +72,7 @@ namespace Atlob_Dent.CRUDControllers.Account
         /// <summary>
         /// register user for new account
         /// </summary>
-        /// <example>url=domain/api/account/register,method=post,body={email,fullName,phone,password,confirmPassword} </example> 
+        /// <example>url=domain/api/account/SignUp,method=post,body={email,fullName,phone,password} </example> 
         /// <param name="model"></param>
         /// <returns></returns>
         [HttpPost]
@@ -155,19 +159,27 @@ namespace Atlob_Dent.CRUDControllers.Account
         /// <returns></returns>
         [HttpGet]
         [AllowAnonymous]
-        public async Task<bool> ConfirmEmail(string userId, string code)
-        {
+        public async Task<IActionResult> ConfirmEmail(string userId, string code)
+        { 
             if (userId == null || code == null)
             {
-                return false;
+                return BadRequest(new BadResponseResult {
+                    message = "userid or code cannot be null" }); 
             }
             var user = await _userManager.FindByIdAsync(userId);
             if (user == null)
             {
-                return false;
+                return NotFound(new BadResponseResult { 
+                message= "the sent user id was not found"
+                });
             }
-            var result = await _userManager.ConfirmEmailAsync(user, code);
-            return result.Succeeded ? true : false;
+            var result = await _userManager.ConfirmEmailByCodeAsync(user, code);
+            if (result.Succeeded)
+            {
+                _transactionHelper.CommitChanges();
+                return Ok(new SuccessResponseResult { message = "email is confirmed" });
+            }
+            else return BadRequest(new BadResponseResult { message= "error occured on confirming your email" });
         }
         #endregion
         #region for password setting
@@ -192,7 +204,8 @@ namespace Atlob_Dent.CRUDControllers.Account
 
                 // For more information on how to enable account confirmation and password reset please
                 // visit https://go.microsoft.com/fwlink/?LinkID=532713
-                var code = await _userManager.GeneratePasswordResetTokenAsync(user);
+                var code = await _userManager.GeneratePasswordResetCodeAsync(user);
+                _transactionHelper.CommitChanges();
                 //var callbackUrl = Url.ResetPasswordCallbackLink(user.Id.ToString(), code, Request.Scheme);
                 await _emailSender.SendEmailAsync(model.Email, "Reset password", $"the reset password code is {code}");
                 return Ok($"a code {code} is sent to this user email {model.Email}");
@@ -221,10 +234,11 @@ namespace Atlob_Dent.CRUDControllers.Account
                 // Don't reveal that the user does not exist
                 return BadRequest(new BadRequestObjectResult($"the email ${model.email} was not found"));
             }
-            var result = await _userManager.ResetPasswordAsync(user, model.code, model.password);
+            var result = await _userManager.ResetPasswordByCodeAsync(user, model.code, model.password);
             if (result.Succeeded)
             {
-                return Ok();
+                _transactionHelper.CommitChanges();
+                return Ok(new SuccessResponseResult { message="password changed successfully"});
             }
             AddErrors(result);
             return BadRequest(new BadRequestObjectResult($"faild to create password for user {user.UserName}"));

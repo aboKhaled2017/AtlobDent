@@ -52,7 +52,7 @@ namespace Atlob_Dent
                 });
             });
             services.Configure<IdentityOptions>(op => {
-                op.Password.RequireNonAlphanumeric = false;
+                op.Password.RequireNonAlphanumeric = false;               
             });            
         }
 

@@ -37,7 +37,6 @@ namespace Atlob_Dent.Services
                 mail.Subject = subject;
                 mail.Body = body;
                 mail.IsBodyHtml = true;
-
                 await SmtpServer.SendMailAsync(mail);
             }
             catch (SmtpFailedRecipientException ex)
@@ -55,8 +54,6 @@ namespace Atlob_Dent.Services
         {
             //Get the Original MailMessage object
             var mess=e.UserState;
-
-
             if (e.Cancelled)
             {
                 //  return false;

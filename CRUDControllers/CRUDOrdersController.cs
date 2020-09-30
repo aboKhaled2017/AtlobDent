@@ -17,7 +17,6 @@ namespace Atlob_Dent.CRUDControllers
 {
     [Route("api/CRUD/Orders")]
     [ApiController]
-    [Authorize]
     public class CRUDOrdersController : MainController
     {
         public CRUDOrdersController(Atlob_dent_Context context) : base(context)

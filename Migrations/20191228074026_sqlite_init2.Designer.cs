@@ -3,23 +3,20 @@ using System;
 using Atlob_Dent.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
-using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Atlob_Dent.Migrations
 {
     [DbContext(typeof(Atlob_dent_Context))]
-    [Migration("20191201180826_addAddressTable")]
-    partial class addAddressTable
+    [Migration("20191228074026_sqlite_init2")]
+    partial class sqlite_init2
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "2.2.6-servicing-10079")
-                .HasAnnotation("Relational:MaxIdentifierLength", 128)
-                .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                .HasAnnotation("ProductVersion", "2.2.6-servicing-10079");
 
             modelBuilder.Entity("Atlob_Dent.Data.Address", b =>
                 {
@@ -108,6 +105,9 @@ namespace Atlob_Dent.Migrations
                     b.Property<string>("UserName")
                         .HasMaxLength(256);
 
+                    b.Property<string>("confirmCode")
+                        .HasMaxLength(8);
+
                     b.HasKey("Id");
 
                     b.HasIndex("NormalizedEmail")
@@ -115,8 +115,7 @@ namespace Atlob_Dent.Migrations
 
                     b.HasIndex("NormalizedUserName")
                         .IsUnique()
-                        .HasName("UserNameIndex")
-                        .HasFilter("[NormalizedUserName] IS NOT NULL");
+                        .HasName("UserNameIndex");
 
                     b.ToTable("AspNetUsers");
                 });
@@ -178,8 +177,7 @@ namespace Atlob_Dent.Migrations
                     b.Property<string>("fullName")
                         .IsRequired();
 
-                    b.Property<string>("phone")
-                        .IsRequired();
+                    b.Property<string>("imgSrc");
 
                     b.HasKey("id");
 
@@ -288,8 +286,7 @@ namespace Atlob_Dent.Migrations
 
                     b.HasIndex("NormalizedName")
                         .IsUnique()
-                        .HasName("RoleNameIndex")
-                        .HasFilter("[NormalizedName] IS NOT NULL");
+                        .HasName("RoleNameIndex");
 
                     b.ToTable("AspNetRoles");
                 });
@@ -297,8 +294,7 @@ namespace Atlob_Dent.Migrations
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
                 {
                     b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .ValueGeneratedOnAdd();
 
                     b.Property<string>("ClaimType");
 
@@ -317,8 +313,7 @@ namespace Atlob_Dent.Migrations
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
                 {
                     b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .ValueGeneratedOnAdd();
 
                     b.Property<string>("ClaimType");
 

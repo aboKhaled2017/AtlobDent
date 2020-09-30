@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace Atlob_Dent.Migrations
 {
-    public partial class addAddressTable : Migration
+    public partial class confirmCode : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -40,7 +40,8 @@ namespace Atlob_Dent.Migrations
                     TwoFactorEnabled = table.Column<bool>(nullable: false),
                     LockoutEnd = table.Column<DateTimeOffset>(nullable: true),
                     LockoutEnabled = table.Column<bool>(nullable: false),
-                    AccessFailedCount = table.Column<int>(nullable: false)
+                    AccessFailedCount = table.Column<int>(nullable: false),
+                    confirmCode = table.Column<string>(maxLength: 8, nullable: true)
                 },
                 constraints: table =>
                 {
@@ -222,7 +223,7 @@ namespace Atlob_Dent.Migrations
                 {
                     id = table.Column<string>(nullable: false),
                     fullName = table.Column<string>(nullable: false),
-                    phone = table.Column<string>(nullable: false),
+                    imgSrc = table.Column<string>(nullable: true),
                     consumedProducts = table.Column<int>(nullable: false)
                 },
                 constraints: table =>

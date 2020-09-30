@@ -20,7 +20,7 @@ namespace Atlob_Dent.Services.AuthServices
         {
             _configuration = configuration;
         }
-        public TokenModel CreateAccessToken(ApplicationUser user,string role)
+        public TokenModel CreateAccessToken(ApplicationUser user,string role,UserType userType=UserType.externalUser)
         {
             var now = DateTime.UtcNow;
             var claims = new Claim[]
@@ -28,6 +28,7 @@ namespace Atlob_Dent.Services.AuthServices
                 new Claim(JwtRegisteredClaimNames.Sub,user.Id),
                 new Claim(JwtRegisteredClaimNames.UniqueName,user.Id),
                 new Claim(JwtRegisteredClaimNames.Email,user.Email),
+                new Claim("hasPassword",userType==UserType.externalUser?"false":"true",typeof(bool).Name),
                 new Claim(ClaimTypes.Role,role),
                 new Claim(JwtRegisteredClaimNames.Jti,Guid.NewGuid().ToString()),
                 new Claim(JwtRegisteredClaimNames.Iat,DateTime.UtcNow.ToString()),

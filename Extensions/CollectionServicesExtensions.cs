@@ -79,8 +79,8 @@ namespace Atlob_Dent
         public static IServiceCollection AddCustomDB_Context_identityServices(this IServiceCollection services,IConfiguration configuration)
         {
             services.AddDbContext<Atlob_dent_Context>(options =>
-            // options.UseSqlite(Configuration.GetConnectionString("Atlob_dentDbLite")),ServiceLifetime.Scoped);
-            options.UseSqlServer(configuration.GetConnectionString("Atlob_dentDb")), ServiceLifetime.Scoped);
+            options.UseSqlite(configuration.GetConnectionString("Atlob_dentDbLite")),ServiceLifetime.Scoped);
+            //options.UseSqlServer(configuration.GetConnectionString("Atlob_dentDb")), ServiceLifetime.Scoped);
             services.AddIdentity<ApplicationUser, IdentityRole>()
                 .AddEntityFrameworkStores<Atlob_dent_Context>()
                 .AddDefaultTokenProviders();
